@@ -10,14 +10,16 @@ import ClassesList from '@/views/classes/list.vue';
 import SegmentList from '@/views/segments/list.vue';
 import PublishList from '@/views/post/publish.vue';
 import ReplyList from '@/views/post/reply.vue';
+import HomeIndex from '@/views/home/index.vue';
 import BaseConfig from '@/config/config'
 
 Vue.use(Router)
 
 var menu = [
   {
-    path: '/', component: Login, title: "登录", icon: "ios-calendar-outline", name: "login",
+    path: '/', component: HomeIndex, title: "首页", icon: "ios-calendar-outline", name: "homeindex",
   },
+
   {
     path: '/login', component: Login, title: "登录", icon: "ios-calendar-outline", name: "login",
   },
