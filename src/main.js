@@ -3,19 +3,20 @@ import Vue from 'vue';
 import { router } from './router';
 
 import App from './App.vue'
-import '@/assets/css/common.less'
+//import '@/assets/css/common.less'
 
-import iView from 'iview';
 
-import 'iview/dist/styles/iview.css';
 import mixin from '@/mixin/mixin.js'
 
 import store from '@/store/index.js'
 
 
 
+
+
+
+
 //载入组件
-Vue.use(iView);
 
 Vue.mixin(mixin);
 

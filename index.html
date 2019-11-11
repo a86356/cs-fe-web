@@ -3,8 +3,16 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>行者课堂后台</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+
+  <meta name="keyword" content="行者课堂,可能是最好的编程入门网站，可以自学的内容包括html、css、javascript、nodejs以及前端流行的框架vue、react、angular等；帮助你从0基础成为具体从业能力的专业人才">
+  <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
+
+
+  <title>行者课堂,可能是最好的编程入门网站，可以自学的内容包括html、css、javascript、nodejs以及前端流行的框架vue、react、angular等；帮助你从0基础成为具体从业能力的专业人才</title>
+<!--  <link rel="stylesheet" href="./static/bootstrap/bootstrap.css">-->
+  <link rel="stylesheet" href="./static/css/reset.css">
+
 </head>
 
 <body>
@@ -12,6 +20,30 @@
 
   <div id="app"></div>
   <!-- built files will be auto injected -->
+<!--  <script src="./static/bootstrap/jq-3.4.1.min.js"></script>-->
+<!--  <script src="./static/bootstrap/bootstrap.min.js"></script>-->
+
+  <script>
+
+      (function(doc, win) {
+          var docEl = doc.documentElement,
+              resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+              recalc = function() {
+                  var clientWidth = docEl.clientWidth;
+                  if (!clientWidth) return;
+                  if (clientWidth >= 750) {
+                      docEl.style.fontSize = '100px';
+                  } else {
+                      docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                  }
+              };
+
+          if (!doc.addEventListener) return;
+          win.addEventListener(resizeEvt, recalc, false);
+          doc.addEventListener('DOMContentLoaded', recalc, false);
+      })(document, window);
+
+  </script>
 </body>
 
 </html>
