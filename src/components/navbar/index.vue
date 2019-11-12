@@ -2,11 +2,6 @@
   <div>
 
 
-    <div class="contactqq">
-      <a href="tencent://Message/?Uin=100000356&amp;websiteName=local.edu.com:8888=&amp;Menu=yes" class="btn btn-qq">
-        <img border="0" src="http://pub.idqqimg.com/wpa/images/counseling_style_53.png" alt="hello xym!!" title="hello xym!!"/>
-      </a>
-    </div>
 
     <nav class="navbar navbar-custom navbar-fixed-top">
       <div class="container">
@@ -30,71 +25,15 @@
             <!--            <li><a href="#contact">联系我们</a></li>-->
 
             <li v-for="(item,index) in navList" :key="index"
-                :class="navIndex==item.index?'active':''"
-                @click="nav(item)"
+                :class="navIndex===item.index?'active':''"
+                @click="goNav(item)"
             >
-              <a href="javascript:void(0);">{{item.title}}</a>
+              {{item.title}}{{navIndex}}
             </li>
           </ul>
         </div>
       </div>
     </nav>
-
-
-    <div style="height: 55px"></div>
-
-    <div class="containerwrap">
-      <div class="container">
-
-
-        <div class="col-md-4 left-box" >
-          <h2 class="title">前端工程师</h2>
-          <h6 class="subtitle">
-            行者课堂的前端知识体系庞大,包含12大模块的专业训练,任何无编程经验的人都可以轻松学会。
-            适合有志从事于前端开发的在校学生,转专业的朋友,我们有专业的老师为你解答编程中遇到
-            的问题,让你快速提升开发水平
-          </h6>
-          <div class="contactinfo" style="margin-bottom: 20px">
-            <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=100000356&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:100000356:51" alt="行者课堂" title="行者课堂"/></a>
-            <span>咨询课程</span>
-            <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=97ae64efb0542e2e497530536a94f2e29c5f07c6eb48506aa32da38146caa08c"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="零基础行者前端" title="零基础行者前端"></a>
-            <span style="margin-left: 5px;">加入qq交流群</span>
-          </div>
-        </div>
-
-        <div class="col-md-8">
-          <div class="right-box">
-            <div class="item one">
-              <h1>第一阶段</h1>
-              <p>学习html,css,javascript基础和开发工具的使用</p>
-            </div>
-            <div class="item two">
-              <h1>第二阶段</h1>
-              <p>前端进阶,深入理解各个知识点</p>
-            </div>
-
-            <div class="item three">
-              <h1>第三阶段</h1>
-              <p>框架学习,学习vue,react,小程序等流行框架</p>
-            </div>
-
-            <div class="item four">
-              <h1>第四阶段</h1>
-              <p>项目实战,模拟真实的企业级开发的项目</p>
-            </div>
-
-            <div class="item five">
-              <h1>第五阶段</h1>
-              <p>面试指导,简历制作</p>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
 
 
   </div>
@@ -109,11 +48,13 @@
                 navList:[
                     {
                         title:"首页",
-                        index:1
+                        index:1,
+                        path:'/home'
                     },
                     {
                         title:"课程详情",
-                        index:2
+                        index:2,
+                        path:"/classdetail"
                     },
                     {
                         title:"教学模式",
@@ -135,9 +76,13 @@
 
         },
         methods: {
-            nav(item){
-                let {index } = item;
+            goNav(item){
+
+                let {index,path } = item;
                 this.navIndex= index;
+                this.$router.push({path:path});
+
+                console.log(this.$data)
             },
 
         }
@@ -166,12 +111,14 @@
     }
   }
 
-  .navbar-custom .navbar-nav>li>a {
+  .navbar-custom .navbar-nav>li {
     color: @color-title;
     font-size: 16px;
+    padding: 15px;
+    cursor: pointer;
   }
 
-  .navbar-custom .navbar-nav .active a{
+  .navbar-custom .navbar-nav .active {
     color: @primary-color;
     border-bottom: 3px solid @primary-color;
   }
