@@ -3,12 +3,12 @@
 
     <div class="footer">
       <div class="footer-container">
-        <div class="footer-navlist">
-          <div class="item">课程详情</div>
-          <div class="item">教学模式</div>
-          <div class="item">视频试看</div>
-          <div class="item">联系我们</div>
-        </div>
+<!--        <div class="footer-navlist">-->
+<!--          <div class="item">课程详情</div>-->
+<!--          <div class="item">教学模式</div>-->
+<!--          <div class="item">视频试看</div>-->
+<!--          <div class="item">联系我们</div>-->
+<!--        </div>-->
         <div class="copyright">
           本站所有课程内容版权归cs1024.com所有 | 浙ICP备18024193号-4
         </div>

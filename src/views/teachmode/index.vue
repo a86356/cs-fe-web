@@ -17,17 +17,17 @@
 
 
     <div class="classlist-container-wrap">
-        <h1 class="big-title">面向零基础的前端课程体系</h1>
-        <div class="item" v-for="(item1,index1) in classlist" :key="index1">
-          <div class="title">
-            {{item1.bigtitle}}
-          </div>
-          <div class="cnt">
-            <div class="class-item" v-for="(item2,index2) in item1.children" :key="index2">
-              {{item2.title}}
-            </div>
+      <h1 class="big-title">面向零基础的前端课程体系</h1>
+      <div class="item" v-for="(item1,index1) in classlist" :key="index1">
+        <div class="title">
+          {{item1.bigtitle}}
+        </div>
+        <div class="cnt">
+          <div class="class-item" v-for="(item2,index2) in item1.children" :key="index2">
+            {{item2.title}}
           </div>
         </div>
+      </div>
     </div>
 
     <div class="qa">
@@ -102,10 +102,10 @@
             行者课堂的课程是怎么样的？
           </div>
           <div class="q">
-              课程包括1000+的视频课程<br/>
-              500+的配套课程<br/>
-              6大企业级别的实战项目<br/>
-              专业的英语辅导,让你在编程路上走的更轻松<br/>
+            课程包括1000+的视频课程<br/>
+            500+的配套课程<br/>
+            6大企业级别的实战项目<br/>
+            专业的英语辅导,让你在编程路上走的更轻松<br/>
           </div>
         </div>
 
@@ -241,7 +241,7 @@
                             },
                         ]
                     },
-                   {
+                    {
                         bigtitle:"第六阶段 - 微信小程序",
                         children:[
                             {
