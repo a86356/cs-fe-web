@@ -55,22 +55,6 @@ Vue.use(mavonEditor)
 
 
 
-
-var x,y,z;
-
-// 2*x+y+0.5z=100;
-// x+y+z =100
-// x,y,z 均为整数
-
-// 2x+100-x-z+0.5z => x+100-0.5z=100 => 2x+200-z=100 => 2x-z=100
-//假设  50<=x<100
-
-//var z= 2x-100
-
-
-
-
-
 /* eslint-disable no-new */
 var vue = new Vue({
   el: '#app',

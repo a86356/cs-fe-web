@@ -23,15 +23,15 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-<!--            <li class="active" @click="nav('home')"><a href="#">首页</a></li>-->
-<!--            <li  @click="nav('detail')"><a href="#about">课程详情</a></li>-->
-<!--            <li><a href="#contact">教学模式</a></li>-->
-<!--            <li><a href="#contact">视频试看</a></li>-->
-<!--            <li><a href="#contact">联系我们</a></li>-->
+            <!--            <li class="active" @click="nav('home')"><a href="#">首页</a></li>-->
+            <!--            <li  @click="nav('detail')"><a href="#about">课程详情</a></li>-->
+            <!--            <li><a href="#contact">教学模式</a></li>-->
+            <!--            <li><a href="#contact">视频试看</a></li>-->
+            <!--            <li><a href="#contact">联系我们</a></li>-->
 
             <li v-for="(item,index) in navList" :key="index"
-              :class="navIndex==item.index?'active':''"
-              @click="nav(item)"
+                :class="navIndex==item.index?'active':''"
+                @click="nav(item)"
             >
               <a href="javascript:void(0);">{{item.title}}</a>
             </li>
@@ -94,30 +94,13 @@
     </div>
 
 
-    <div class="footer">
-      <div class="footer-container">
-          <div class="footer-navlist">
-            <div class="item">课程详情</div>
-            <div class="item">教学模式</div>
-            <div class="item">视频试看</div>
-            <div class="item">联系我们</div>
-          </div>
-          <div class="copyright">
-            本站所有课程内容版权归cs1024.com所有 | 浙ICP备18024193号-4
-          </div>
-      </div>
-    </div>
+
 
 
   </div>
 </template>
 
 <script>
-    import BaseConfig from "@/config/config";
-    import { login } from "@/api/apis";
-    import { setCacheData } from "@/utils/cache";
-    import Validator from "@/utils/validator.js";
-
     export default {
         name: "Login",
         data() {
@@ -152,27 +135,11 @@
 
         },
         methods: {
-            showResigterModal() {
-                this.register.modal = true;
-            },
             nav(item){
                 let {index } = item;
                 this.navIndex= index;
-
             },
-            login() {
-                this.data1.service = "admin.login";
 
-                this.$post(this.data1).then(res => {
-                    setCacheData({ k: BaseConfig.TOKEN_KEY, v: res.auth_key });
-                    this.nav({ path: BaseConfig.HOME_PATH });
-                });
-            },
-            goHome() {
-                this.data1.username = "cs";
-                this.data1.password = "2";
-                this.login();
-            }
         }
     };
 </script>
@@ -202,14 +169,12 @@
   .navbar-custom .navbar-nav>li>a {
     color: @color-title;
     font-size: 16px;
-
   }
+
   .navbar-custom .navbar-nav .active a{
     color: @primary-color;
     border-bottom: 3px solid @primary-color;
   }
-
-
   .containerwrap{
     min-width: 1200px;
     height: calc(100vh - 110px);
@@ -221,7 +186,6 @@
   }
   .left-box{
     color: #fff;
-
     .title{
       font-size: 50px;
       margin-bottom: 20px;
@@ -232,13 +196,6 @@
     }
   }
 
-
-  .contactqq{
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 9999;
-  }
   .right-box{
     color: #fff;
     display: flex;
@@ -253,28 +210,20 @@
       height: 150px;
       color: #fff;
       text-align: center;
-
       margin:  0 0 15px 15px;
 
       h1{
         text-align: center;
         font-size: 30px;
       }
-
       p{
         font-size: 18px;
       }
     }
     .one{
       background: @success-color;
-
     }
-    /*.one：hover{*/
-    /*  //animation: heart 0.5s infinite;*/
-    /*  background: pink!important;*/
-    /*}*/
     .two{
-
       background: @primary-color-light;
     }
     .three{
@@ -303,29 +252,6 @@
     }
   }
 
-  .footer{
-
-    .footer-container{
-      width: 100%;
-      margin: 15px auto;
-      text-align: center;
-      .footer-navlist{
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-        .item{
-          padding: 0 15px;
-          cursor: pointer;
-
-          &:hover{
-            text-decoration: underline;
-            color: @error-color;
-          }
-        }
-      }
-    }
-
-  }
 
 
   @media (max-width: 1024px) {
