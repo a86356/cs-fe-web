@@ -11,6 +11,7 @@
 <!--        </div>-->
         <div class="copyright">
           本站所有课程内容版权归cs1024.com所有 | 浙ICP备18024193号-4
+          工信部网站（http://www.beian.miit.gov.cn）
         </div>
       </div>
     </div>

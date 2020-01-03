@@ -55,6 +55,9 @@ Vue.use(mavonEditor)
 
 
 
+
+
+
 /* eslint-disable no-new */
 var vue = new Vue({
   el: '#app',
