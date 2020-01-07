@@ -1,4 +1,5 @@
 import Validator from '@/utils/validator.js'
+import config from "../config/config";
 export default {
   data() {
     return {
@@ -25,6 +26,7 @@ export default {
       modalTitle: "",
       counts: 0,
       modalForm: false,
+      falseV:false,
       payType: {
         "q1": "余额",
         "q2": "微信",
@@ -32,6 +34,31 @@ export default {
       },
       PAYCOLUMN: "paycolumn",
       PAYDATA: "paydata",
+      videotypes:[
+        {id:1, name:'html-css'},
+        {name:'html5-css3'},
+        {name:'javascript'},
+        {name:'vue'},
+        {name:'react'},
+        {name:'webpack'},
+        {name:'docker'},
+        {name:'redis'},
+        {name:'websocket'},
+        {name:'mysql'},
+        {name:'linux'},
+        {name:'chrome插件'},
+        {name:'nodejs'},
+        {name:'es6'},
+        {name:'ngxin'},
+        {name:'git'},
+        {name:'软件工具'},
+        {name:'微信开发'},
+        {name:'其他'},
+      ],
+      mytoolbars:{
+        code: true, // code
+        preview:true
+      }
     }
   },
   mounted() {
@@ -75,32 +102,14 @@ export default {
       //
       // 			})
     },
-    stamp_to_time(fmt) {
-      var o = {
-        "M+": this.getMonth() + 1, // 月份
-        "d+": this.getDate(), // 日
-        "h+": this.getHours(), // 小时
-        "m+": this.getMinutes(), // 分
-        "s+": this.getSeconds(), // 秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), // 季度
-        "S": this.getMilliseconds() // 毫秒
-      };
-      if (/(y+)/.test(fmt))
-        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + ""));
-      for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-      return fmt;
-    },
-    RSAencrypt(pas) {
-      //实例化jsEncrypt对象
-      let jse = new this.$jsEncrypt;
-      //设置公钥
-      jse.setPublicKey('-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChdK43kKRy5owp7/1wsMwnjIac1+YOmT8f5WrAoVXfiyAcgyUrg30SISYA8lPSG1MDKgqICkbSaGPzLUvNp6pahxbKWqTgNzDhEin9OP0CHDkbvl/agSBjkMHwz6eeZfOpSXBbT6H+/6VjTje04ckBdQoj0svl9FhUXXd7i/HjnwIDAQAB-----END PUBLIC KEY-----');
-      //解密
-      return jse.encrypt(pas);
-    },
+
+
     pop(level) {
       this.$router.back(level)
+    },
+    gohome(){
+      console.log(11);
+      this.nav(config.HOME_PATH)
     },
     setCache(k, v) {
       localStorage.setItem(k, v)
@@ -162,6 +171,7 @@ export default {
     nav(path) {
       this.$router.push(path);
     },
+
     cancelModal() {
       this.modal1 = false;
     },

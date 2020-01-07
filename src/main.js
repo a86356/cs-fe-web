@@ -7,12 +7,7 @@ import App from './App.vue'
 
 
 import mixin from '@/mixin/mixin.js'
-
 import store from '@/store/index.js'
-
-
-
-
 
 
 
@@ -37,9 +32,6 @@ Date.prototype.Format = function (fmt) {
   return fmt;
 }
 
-import BaseForm from '@/components/form/Base'
-
-Vue.component("base-form", BaseForm);
 
 
 import { createApi } from '@/api/axios';
@@ -52,10 +44,7 @@ import 'mavon-editor/dist/css/index.css'
 // use
 Vue.use(mavonEditor)
 
-
-
-
-
+import './assets/fonts/iconfont.css'
 
 
 /* eslint-disable no-new */

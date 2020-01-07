@@ -6,26 +6,32 @@
       <div class="container">
         <h1>联系我们</h1>
         <div class="row">
-          <div class="col-md-1"></div>
-          <div class="col-md-4">
+
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
             <div class="item">
               <h1>公众号</h1>
               <div class="imgwrap">
-                <img src="../../assets/images/gzh_qrcode.jpg" alt="">
+                <img class="img-responsive" src="../../assets/images/gzh_qrcode.jpg" alt="">
               </div>
             </div>
           </div>
-          <div class="col-md-1"></div>
-          <div class="col-md-1"></div>
-          <div class="col-md-4">
+
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
             <div class="item">
               <h1>微信</h1>
               <div class="imgwrap">
-                <img src="../../assets/images/wx_qrcode.png" alt="">
+                <img class="img-responsive" src="../../assets/images/wx_qrcode.png" alt="">
               </div>
             </div>
           </div>
-          <div class="col-md-1"></div>
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="item">
+              <h1>QQ</h1>
+              <div class="imgwrap">
+                <img class="img-responsive" src="../../assets/images/qqcode.png" alt="">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -60,9 +66,7 @@
   @import "../../assets/css/common.less";
 
   .container-contact-wrap{
-    width: 1200px;
-    padding: 20px;
-    background-size: cover;
+
     color: #000;
     text-align: center;
     background: #fff;
@@ -70,35 +74,17 @@
     margin: 20px  auto;
 
 
-
     .item{
       padding: 15px;
-      border: 1px solid @color-border;
+      border: 1px solid @border;
       img{
         width: 300px;
         height: 300px;
+        margin: 0 auto;
       }
     }
 
   }
 
-  @media (max-width: 1024px) {
-    .container-banner-wrap{
-      width: 100%;
-      .cnt{
-        margin-top: 20px;
-      }
-    }
-
-    .classlist-container-wrap{
-      width: 90%;
-      .item{
-        width: 100%;
-      }
-    }
-    .qa-wrap{
-      width: 100%;
-    }
-  }
 
 </style>
