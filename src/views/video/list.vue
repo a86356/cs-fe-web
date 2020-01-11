@@ -4,18 +4,16 @@
 
       <div class="searchwrap">
         <div class="input-group">
-          <input type="text" class="form-control " placeholder="请输入查询的内容">
+          <input type="text" class="form-control" v-model="searchcontent" placeholder="请输入查询的内容">
           <div class="input-group-append">
-            <button  class="btn btn-default">搜索课程</button>
+            <button  class="btn btn-default" @click="searchClasses">搜索课程</button>
           </div>
         </div>
         <div class="row">
           <div class="searchitem">
             <div class="clearfix list">
               <div class="mylabel fl">技术选型</div>
-              <div class="leading fl item active">全部</div>
-
-              <div v-for="(item,index) in videotypes" :key="index" class="fl item">
+              <div v-for="(item,index) in categoryList" :key="index" class="fl item"  :class="tecType==item.id?'active':''" @click="selectTech(item)">
                 {{item.name}}
               </div>
             </div>
@@ -25,72 +23,114 @@
           <div class="searchitem">
             <div class="clearfix list">
               <div class="mylabel fl">是否收费</div>
-              <div class="fl item active">全部</div>
-              <div class="fl item ">收费</div>
-              <div class="fl item ">免费</div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="searchitem">
-            <div class="clearfix list">
-              <div class="mylabel fl">技术难度</div>
-              <div class="fl item active">全部</div>
-              <div class="fl item ">初级</div>
-              <div class="fl item ">中级</div>
-              <div class="fl item ">高级</div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="searchitem">
-            <div class="clearfix list">
-              <div class="mylabel fl">排序方式</div>
-              <div class="fl item active">默认</div>
-              <div class="fl item ">发布时间从早到晚</div>
-              <div class="fl item ">发布时间从晚到早</div>
+              <div class="fl item" :class="viptype==item.id?'active':''"  v-for="(item,index) in viptypes" :key="index" @click="selectVip(item)">{{item.name}}</div>
             </div>
           </div>
         </div>
 
       </div>
 
+      <videolist :list="list1"></videolist>
 
-      <videolist></videolist>
-
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          <li>
-            <a href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li>
-            <a href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <pagination v-if="counts>0" :count="counts" @setpage="setpage"></pagination>
 
     </div>
-
-
 
   </div>
 </template>
 
 <script>
     import videolist from "../../components/videolist";
-
+    import pagination from "../../components/pagination";
     export default {
         components:{
-            videolist
+            videolist,
+            pagination
+        },
+        data(){
+            return {
+                tecType:0,
+                tecTypeAll:0,
+                viptype:'-1',
+                viptypes:[
+                    {id:'-1', name:'全部'},
+                    {id:'1', name:'付费'},
+                    {id:'2', name:'免费'},
+                ],
+                categoryList:[],
+                searchcontent:''
+            }
+        },
+        mounted() {
+          this.loadList();
+          this.loadCategoryList();
+        },
+        methods:{
+            loadList(){
+
+                let tectype=this.tecType;
+                let viptype=this.viptype;
+
+                //全部技术选型
+                if(this.tecType==this.tecTypeAll){
+                    tectype='-1';
+                }else{
+                    this.categoryList.forEach(item=>{
+                        if(tectype==item.id){
+                            tectype=item.name
+                        }
+                    })
+                }
+                // seach
+                let search='-1';
+                if(this.searchcontent){
+                    search = this.searchcontent
+                }
+
+                this.$api({
+                    service:'classes.getlist',
+                    page:this.page,
+                    searchcontent:search,
+                    viptype:viptype,
+                    techtype:tectype
+                }).then(res=>{
+                    this.list1=res.list;
+                    this.counts=res.count;
+
+                })
+            },
+            setpage(params){
+                this.goTopNow();
+                this.page=params.page;
+                this.loadList();
+            },
+            loadCategoryList(){
+                this.$api({
+                    service:'classes.getallcategory',
+                }).then(res=>{
+                    this.tecType = res.list[0].id
+                    this.tecTypeAll = this.tecType;
+                    this.categoryList=res.list;
+                })
+
+
+            },
+            selectTech(item){
+                this.tecType =item.id;
+                this.page=1;
+                this.loadList();
+            },
+            selectVip(item){
+                this.viptype = item.id;
+                this.loadList();
+                this.page=1;
+            },
+            searchClasses(){
+                this.viptype = '-1';
+                this.tecType = this.tecTypeAll;
+                this.page=1;
+                this.loadList();
+            }
         }
 
     };
@@ -140,6 +180,7 @@
         color: @title;
         &:hover{
           color:@subColor;
+          text-decoration: underline;
         }
       }
       .active{

@@ -14,17 +14,19 @@
             <iframe class="myvideo" src="//player.bilibili.com/player.html?aid=52394734&cid=91696574&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 -->
             <div class="videowrap">
-              <div id="dplayer"></div>
+              <div :class="videotype=='cdn'?'':'hide'">
+                <div id="dplayer"></div>
+              </div>
+
+
               <div class="prevnext">
                 <button class="btn btn-success"> 上一集</button>
+
                 <button class="btn btn-success"> 下一集</button>
               </div>
             </div>
-
-            <commentitem></commentitem>
-            <commentpublishbox></commentpublishbox>
+<!--            <commentitem></commentitem>-->
           </div>
-
 
 
         </div>
@@ -38,34 +40,28 @@
                 <span >视频列表</span>
               </div>
               <div class="panel-body panelbd">
-                <div class="item">
-                  <span class="leading">
-                    1 -
-                  </span>
-                  <span class="free icon">
-                    Free
-                  </span>
-                  <span class="tit">
-                   - Ant Design Pro v4 基于角色的权限访问v4 基于角色的权限访问v4 基于角色的权限访问控制实战教程 #3 使用 umi ui 创建项目
-                  </span>
-                </div>
-                <div class="item">
-                  <span class="leading">
-                    <i class="iconfont">&#xe62b;</i> -
-                  </span>
-                  <span class="vip icon">
-                    Vip
-                  </span>
-                  <span class="tit">
-                   - Ant Design Pro v4 基于角色的权限访问控制实战教程 #3 使用 umi ui 创建项目
-                  </span>
+                <div class="item hover-main" v-for="(item,index) in allseglist" :key="index" >
+                  <div class="leading">
+
+                    <span :class="item.seg_id==seg_id?'hide':''">{{item.sort}}</span>
+                    <span :class="item.seg_id==seg_id?'':'hide'"><i class="iconfont">&#xe62b;</i></span>
+
+                  </div>
+                  <div class="free icon" :class="item.isvip==1?'free':'vip'">
+                    {{item.isvip=='1'?'free':'vip'}}
+                  </div>
+                  <div class="tit">
+
+                    <div class="top">
+                      {{item.seg_name}}
+                    </div>
+                    <div class="duration">
+                      ({{item.duration}})
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-
-
-
-
           </div>
           <div class="right-box">
 
@@ -131,36 +127,99 @@
 
     import 'dplayer/dist/DPlayer.min.css';
     import DPlayer from 'dplayer';
-    import commentpublishbox from "../../components/comment/commentpublishbox";
+
     import commentitem from "../../components/comment/commentitem";
     export default {
         data(){
             return {
-                content:"",
-
+                allseglist:[],
+               // videourl:'http://cdn.cs1024.com/92cf60b9f266f475fe17859e0e377a1b.m3u8',
+                videourl:'http://cdn.cs1024.com/92cf60b9f266f475fe17859e0e377a1b.m3u8',
+                videotype:"",
+                logo:'http://img.cs1024.com/images/cetteach1024.png',
+                poster:'',
+                seg_id:-1,
+                seg_item:{},
+                class_id:'',
             }
         },
         components:{
             videolist,
             loveandcomment,
-            commentpublishbox,
             commentitem
         },
         mounted() {
-            const dp = new DPlayer({
-                container: document.getElementById('dplayer'),
-                screenshot: true,
-                video: {
-                    url: 'http://cdn.cs1024.com/92cf60b9f266f475fe17859e0e377a1b.m3u8',
-                    type: 'hls'
-                },
-                subtitle: {
-                    url: 'webvtt.vtt',
-                },
 
-                lang:'zh-cn',
-                logo:"http://cdn.cs1024.com/cetteach1024.png?imageslim"
-            });
+          let {class_id,seg_id} =  this.$route.query
+          this.class_id=class_id;
+          this.seg_id=seg_id;
+          this.initDp();
+          this.loadAllSeg();
+        },
+        methods:{
+            initDp(){
+                const dp = new DPlayer({
+                    container: document.getElementById('dplayer'),
+                    screenshot: true,
+                    video: {
+                        url: this.videourl,
+                        type: 'hls',
+                        pic:this.poster
+                    },
+                    subtitle: {
+                        url: 'webvtt.vtt',
+                    },
+
+                    lang:'zh-cn',
+                    logo:this.logo
+                });
+            },
+            loadAllSeg(){
+
+                this.$api({
+                    service:"videos.getallseg",
+                }).then(res=>{
+                    this.allseglist = res.list;
+
+                    if(this.seg_id==-1){
+                        this.seg_id = res.list[0].seg_id;
+
+                    }
+
+                    for (let i=0;i<this.allseglist.length;i++){
+                        if(this.seg_id==this.allseglist[i].seg_id){
+                            this.seg_item = this.allseglist[i];
+                        }
+                    }
+
+
+                    this.loadOneSeg();
+
+                })
+
+            },
+            loadOneSeg(){
+                if(this.seg_id==-1)return;
+
+                this.$api({
+                    service:"videos.getoneseg",
+                    seg_id:this.seg_id
+                }).then(res=>{
+                  let {ok,type,url} =res;
+                  if(ok=='-1'){
+                      this.goSubscribe()
+                  }
+
+                  this.videotype = type
+                  this.videourl  = url;
+                  if(type=='cdn'){
+
+                     this.initDp();
+                  }
+
+                })
+
+            }
         }
 
 
@@ -171,7 +230,13 @@
 
   @import "../../assets/css/common.less";
 
+  .hover-main{
+    cursor: pointer;
+    &:hover{
+      background: #ccc;
 
+    }
+  }
   #dplayer{
     .dplayer-logo{
       background: red;
@@ -275,21 +340,28 @@
     overflow: auto;
 
     .item{
-      padding-bottom: 10px;
-      margin-bottom: 5px;
-      line-height: 24px;
+      padding: 10px;
+      display: flex;
+      .leading{
+        margin-right: 10px;
+      }
       .icon{
-        padding: 3px 6px;
+        width: 35px;
+        height: 25px;
+        line-height: 25px;
         border-radius: 3px;
         text-align: center;
         color: #fff;
-        margin: 0 3px;
+        margin-right: 5px;
       }
       .free{
         background: @green;
       }
       .vip{
         background: @red;
+      }
+      .tit{
+        line-height: 25px;
       }
     }
   }

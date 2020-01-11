@@ -1,7 +1,7 @@
-export const setCacheData= params =>{
+export const setCacheData= (k,v) =>{
   var storage=window.localStorage;
 
-  storage.setItem(params.k,params.v)
+  storage.setItem(k,v)
 }
 
 export const getCacheData=key=> {

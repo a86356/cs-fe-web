@@ -7,8 +7,11 @@ import App from './App.vue'
 
 
 import mixin from '@/mixin/mixin.js'
-import store from '@/store/index.js'
+import 'jquery'
 
+import VueClipboard  from 'vue-clipboard2'
+
+Vue.use( VueClipboard )
 
 
 //载入组件
@@ -32,11 +35,60 @@ Date.prototype.Format = function (fmt) {
   return fmt;
 }
 
+Vue.filter('cntime',function (fmt) {
+  var now = new Date(fmt * 1000);
+
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var date = now.getDate();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
+  return year + "年" + month + "月" + date + " " + hour + ":" + minute + ":" + second;
+})
 
 
-import { createApi } from '@/api/axios';
+Vue.filter('beforedateline', function (value) {
 
-Vue.prototype.$post = createApi();
+  let nowTimeline = parseInt(new Date().getTime()/1000);
+  let between = parseInt(nowTimeline-value);
+
+  let val;
+  //秒
+  if(between<60){
+    return between+"秒"
+  }
+  // 分钟
+  if(60<=between   && between<3600){
+    val= parseInt(between/60);
+
+    return  val+"分钟"
+  }
+
+  //小时
+  if(3600<=between && between<=3600*24){
+    val= parseInt(between/3600);
+    return  val+"小时"
+  }
+
+  //天
+  if(3600*24<=between && between<=3600*24*31 ){
+    val= parseInt(between/(3600*24));
+    return  val+"天"
+  }
+  // 月
+  if(3600*24*31<=between && between<=3600*24*31*12){
+    val= parseInt(between/(3600*24*31));
+    return  val+"月"
+  }
+  //年
+  if(3600*24*31*12<=between){
+    val= parseInt(between/(3600*24*31*12));
+    return  val+"年"
+  }
+
+})
+
 
 
 import mavonEditor from 'mavon-editor'
@@ -46,6 +98,22 @@ Vue.use(mavonEditor)
 
 import './assets/fonts/iconfont.css'
 
+import {commonApi} from './api/apis'
+
+Vue.prototype.$api = commonApi;
+
+//iview
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
+
+Vue.use(ViewUI);
+
+import store from '../src/store/index'
+
+
+import Validator from '@/utils/validator.js'
+
+Vue.prototype.$validator=Validator;
 
 /* eslint-disable no-new */
 var vue = new Vue({

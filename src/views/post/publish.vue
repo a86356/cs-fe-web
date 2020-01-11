@@ -6,67 +6,97 @@
         发布帖子</div>
       <div class="panel-body">
         <div class="form-group">
-          <input type="text" class="form-control" id="exampleInputEmail1" placeholder="请输入帖子标题">
+          <input type="text" class="form-control" v-model="title" placeholder="请输入帖子标题">
         </div>
 
         <div class="checkbox">
-          <label><input type="radio" name="type"><span>html-css</span></label>
-          <label><input type="radio" name="type"><span>html5-css3</span></label>
-          <label><input type="radio" name="type"><span>javascript</span></label>
-          <label><input type="radio" name="type"><span>vue</span></label>
-          <label><input type="radio" name="type"><span>react</span></label>
-          <label><input type="radio" name="type"><span>webpack</span></label>
-          <label><input type="radio" name="type"><span>docker</span></label>
-          <label><input type="radio" name="type"><span>redis</span></label>
-          <label><input type="radio" name="type"><span>websocket</span></label>
-          <label><input type="radio" name="type"><span>mysql</span></label>
-          <label><input type="radio" name="type"><span>linux</span></label>
-          <label><input type="radio" name="type"><span>chrome插件</span></label>
-          <label><input type="radio" name="type"><span>php</span></label>
-          <label><input type="radio" name="type"><span>nodejs</span></label>
-          <label><input type="radio" name="type"><span>es6</span></label>
-          <label><input type="radio" name="type"><span>ngxin</span></label>
-          <label><input type="radio" name="type"><span>git</span></label>
-          <label><input type="radio" name="type"><span>服务器</span></label>
-          <label><input type="radio" name="type"><span>软件工具</span></label>
-          <label><input type="radio" name="type"><span>微信开发/微信小程序</span></label>
-          <label><input type="radio" name="type"><span>其他</span></label>
+
+          <label v-for="(item,index) in categoryList" :key="index"><input v-model="typeId" :value="item.id" type="radio" name="type"><span>{{item.name}}</span></label>
+
         </div>
 
         <div class="markdown">
-          <mavon-editor
-            style="height: 300px;padding: 15px;"
-            placeholder="请输入帖子内容 ( 支持markdown语法,支持图片拖拽上传,图片复制后粘贴上传,点击上方按钮插入代码 )"
-            :toolbars="toolbars"
-
-            v-model="content"
-          />
+          <mdeditor @change="change"></mdeditor>
         </div>
       </div>
-      <div class="panel-footer">
-        <button class="btn btn-primary">保存提交</button>
+      <div class="panel-footer" style="background: #fff">
+        <button class="btn btn-primary" @click="submit">发布帖子</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
+    import mdeditor from "../../components/mdeditor";
     export default {
         name: "",
         data() {
             return {
-                toolbars: {
-                    code: true, // code
-
-                },
-                content:""
+                categoryList:[],
+                content:"",
+                title:"",
+                typeId:""
             }
         },
         components: {
+            mdeditor
         },
         mounted() {
+            this.loadCategory();
         },
         methods:{
+          loadCategory(){
+              this.$api({
+                  service:"classes.getallcategory"
+              }).then(res=>{
+
+                  this.categoryList = res.list.filter(item=>{
+                      //排除掉全部
+                      return item.sort<10
+                  });
+              })
+          },
+          submit(){
+              let {content,title,typeId} = this;
+
+              if(title==''){
+                  this.showmsg('info','请填写标题');
+                  return;
+              }
+              if(typeId==''){
+                  this.showmsg('info','请选择文章类型');
+                  return;
+              }
+
+              if(content==''){
+                  this.showmsg('info','请填写内容');
+                  return;
+              }
+              let typeName ;
+
+              for (let i=0;i<this.categoryList.length;i++){
+                  if(this.categoryList[i].id==typeId){
+                      typeName = this.categoryList[i].name;
+                  }
+              }
+
+              this.$api({
+                  service: "article.publish",
+                  typeId:typeId,
+                  typeName:typeName,
+                  title:title,
+                  content:content
+              }).then(res=>{
+                  this.showmsg('success','发布成功');
+                  this.nav('/cs/postlist');
+              })
+          },
+          change(cnt){
+
+              this.content = cnt;
+          }
+
 
         }
     }

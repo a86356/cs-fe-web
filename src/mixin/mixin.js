@@ -1,153 +1,59 @@
 import Validator from '@/utils/validator.js'
 import config from "../config/config";
+import {getCacheData} from "../utils/cache";
+
+
+
 export default {
   data() {
     return {
       list1: [],
-      data1: {},
-      data2: {},
-      data3: {},
-      modalTitle1: '',
-      modalTitle2: '',
-      modalTitle3: '',
-      loading1: false,
-      modal1: false,
-      modal2: false,
-      modal3: false,
-      id: 0,
-      ids: "",
-      selectedArray: '',
-      is_code_sending: false,
-      codemsg: "发送验证码",
-      MylabelWidth: 80,
-      page: 1,
-      pSize: 20,
-      searchForm: {},
-      modalTitle: "",
-      counts: 0,
-      modalForm: false,
+      counts:0,
+      data1:{},
       falseV:false,
-      payType: {
-        "q1": "余额",
-        "q2": "微信",
-        "q3": "支付宝"
-      },
-      PAYCOLUMN: "paycolumn",
-      PAYDATA: "paydata",
-      videotypes:[
-        {id:1, name:'html-css'},
-        {name:'html5-css3'},
-        {name:'javascript'},
-        {name:'vue'},
-        {name:'react'},
-        {name:'webpack'},
-        {name:'docker'},
-        {name:'redis'},
-        {name:'websocket'},
-        {name:'mysql'},
-        {name:'linux'},
-        {name:'chrome插件'},
-        {name:'nodejs'},
-        {name:'es6'},
-        {name:'ngxin'},
-        {name:'git'},
-        {name:'软件工具'},
-        {name:'微信开发'},
-        {name:'其他'},
-      ],
-      mytoolbars:{
-        code: true, // code
-        preview:true
-      }
+
+
+      page:1
     }
   },
   mounted() {
 
   },
   methods: {
-    _sendcode(param) {
-      let phone = param.mobileNo;
-      let ret = Validator.v.vPhone(phone);
-      if (ret != true) {
-        this.showmsg('error', ret);
-        return false;
+
+    publistpost(){
+      if(!this.isLogined()){
+        this.nav(config.LOGIN_PATH)
       }
-
-      if (this.is_code_sending) return;
-
-      let count = 60;
-      let that = this;
-      let timer = setInterval(() => {
-
-        if (count-- == 0) {
-          that.codemsg = "发送验证码";
-          that.is_code_sending = false;
-          clearInterval(timer);
-        } else {
-          that.codemsg = count + "s"
-          this.is_code_sending = true;
-        }
-
-      }, 1000)
-      sendMsg(param).then(res => {
-
-      })
-      // 			this.$api.post('membersms.send', {
-      // 				"phone": this.data1['phone'],
-      // 				"type": this.code_type
-      // 			}).then(res => {
-      // 				if (res.code != '0') {
-      // 					this.showtoast(res.msg);
-      // 				}
-      //
-      // 			})
+      this.nav(config.PUBLISHPOST_PATH)
     },
+    checkLogin(){
+      if(!this.isLogined()){
 
 
-    pop(level) {
-      this.$router.back(level)
-    },
-    gohome(){
-      console.log(11);
-      this.nav(config.HOME_PATH)
-    },
-    setCache(k, v) {
-      localStorage.setItem(k, v)
-    },
-    getCache(key) {
-      return localStorage.getItem(key)
-    },
-    removeCache(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        let item = arr[i];
-        localStorage.removeItem(item)
+        this.nav(config.LOGIN_PATH)
       }
     },
-    selectChange(selection) {
-      this.selectedArray = selection;
-      let ids = '';
-      for (let i = 0; i < selection.length; i++) {
-        ids += selection[i].id + ','
-      }
-      if (ids.length > 0) {
-        ids = ids.substr(0, ids.length - 1);
-      }
-      this.ids = ids;
+    goSetting(){
+      this.nav(config.SETTING_PATH);
     },
-    selectChangeArray(selection) {
-      this.selectedArray = selection;
+    goTopNow(){
+      document.body.scrollTop = document.documentElement.scrollTop = 0
+    },
+    goBottomNow(){
+      document.body.scrollTop = document.documentElement.scrollTop =99999
 
     },
-    switchRule(rule) {
-      let arr = [];
-      Object.keys(rule).forEach(function (key) {
-        let type;
-        if (rule[key][0].required) {
-          type = 'required';
-        }
-        arr.push([key, type, rule[key][0].message])
-      });
-      return arr;
+    goGithub(){
+      if(this.writerInfo.github){
+        window.open(this.writerInfo.github);
+      }
+    },
+    goVideo(class_id,seg_id='-1'){
+      this.$router.push({path:config.VIDEODETAIL_PATH,query:{class_id:class_id,seg_id:seg_id}})
+    },
+    goSubscribe(){
+      this.nav(config.SUBSCRIBE_PATH)
     },
     showmsg(type, msg) {
       switch (type) {
@@ -168,181 +74,77 @@ export default {
           break;
       }
     },
-    nav(path) {
-      this.$router.push(path);
-    },
-
-    cancelModal() {
-      this.modal1 = false;
-    },
-    showModal() {
-      this.modal1 = true;
-    },
-    change_page(page) {
-      this.page = page;
-      this.loadData_table();
-    },
-    cutlast(params) {
-      return params.substr(0, params.length - 1);
-    },
-    createEntity(_params, _fun) {
-      var that = this;
-      var entity = _params == null ? this.formEntity : _params;
-      entity['t'] = 'Create' + this.actionList;
-      // return;
-
-      var entityParams = {};
-      for (var k in entity) {
-
-        if (k.indexOf("==") > -1) {
-          var s = k.split('=');
-          entityParams[s[0]] = entity[k] ? 1 : 0;
+    switchRule(rule){
+      let arr=[];
+      Object.keys(rule).forEach(function(key){
+        let type ;
+        if(rule[key][0].required){
+          type='required';
         }
-        else if (entityParams[k] == null) {
-          if (typeof entity[k] == 'object') {
-            var val = entity[k].toString();
-            if (val.indexOf("Object") == -1)
-              entityParams[k] = val
-            else
-              entityParams[k] = entity[k];
-          }
-          else {
-            entityParams[k] = entity[k];
-          }
+        if(rule[key][0].email){
+          type='email';
+        }
+        if(rule[key][0].phone){
+          type='phone';
         }
 
-      }
-
-      this.service(this.moduleName).post(entityParams).then((_d) => {
-        _fun(_d);
+        arr.push([key,type,rule[key][0].message])
       });
+      return arr;
     },
-    create() {
-      var that = this;
-
-
-      this.$refs.child.createEntity(null, (_d) => {
-
-        if (_d.status == 'fail') {
-          this.$Message.error(_d.text);
-          return;
-        }
-
-        if (that.modalForm != null)
-          that.modalForm = false;
-        if (that.loadPage != null)
-          that.loadPage();
-      });
+    goArticleDetail(id){
+      this.$router.replace({path:config.ARTICLEDETAIL_PATH,query:{id:id}})
     },
-    showForm(_entity) {
-      var that = this;
-      this.modalForm = true;
-      var params = { t: 'Model' + this.actionList };
-      if (_entity["ID"] != null)
-        params["id"] = _entity["ID"];
-
-      this.service(this.moduleName).get(params).then((_data) => {
-        var data = _data.data.length > 0 ? _data.data[0] : {};
-        this.$refs.child.changeEntity(data);
+    isLogined(){
+      if(this.getCache(config.TOKEN_KEY))
+        return true
+      else
+        return  false
+    },
+    getCache(key){
+      return getCacheData(key);
+    },
+    showNoticeSuccess(msg){
+      this.$Notice.success({
+        title:"成功",
+        desc:msg,
+        top: 100,
       })
     },
-    showPage(_entity) {
-      var that = this;
-      var tableName = _entity.TableName.toString();
-      delete _entity["TableName"]
-      this.$router.push({ path: '/' + tableName, query: _entity });
-    },
-    openForm() {
-      this.modalForm = true;
-      this.$refs.child.changeEntity({});
-    },
-    showDialog(_entity) {
-      this.modalForm = true;
-      console.log(_entity)
-      this.childEntity = _entity;
-    },
-    changeEntity(_val) {
-      var entity = _val;
-      this.formEntity = entity;
-    },
-    removeItem(param, func) {
 
-      this.$Modal.confirm({
-        title: '删除',
-        content: '您确定要删除吗?',
-        onOk: () => {
-          func({ id: param.id }).then(res => {
-            // this.showmsg('success','删除成功');
-            this.loadData()
-          })
-        }
-      });
+    showNoticeInfo(msg){
+      this.$Notice.info({
+        title:"消息",
+        desc:msg,
+        top: 100,
+      })
     },
-    expandTree(data) {
-      for (let a = 0; a < data.length; a++) {
-        data[a].expand = true;
-        for (let b = 0; b < data[a].children.length; b++) {
-          data[a].children[b].expand = true;
-
-          for (let c = 0; c < data[a].children[b].children.length; c++) {
-            data[a].children[b].children[c].expand = true;
-
-            for (let d = 0; d < data[a].children[b].children[c].children.length; d++) {
-              data[a].children[b].children[c].children[d].expand = true;
-            }
-
-          }
-
-        }
-
-      }
-      return data;
+    goRegister(){
+      this.nav(config.REGISTER_PATH)
     },
-    cancelItem(param, func) {
-
-      this.$Modal.confirm({
-        title: '取消',
-        content: '您确定要取消该记录吗?',
-        onOk: () => {
-          func({ id: param.id }).then(res => {
-            // this.showmsg('success','删除成功');
-            this.loadData()
-          })
-        }
-      });
+    goLogin(){
+      this.nav(config.LOGIN_PATH)
     },
-    resolveNumber(v) {
-
-      if (v == undefined || v == null || v == '0') {
-        return 0;
-      }
-      return v;
+    goFotgetpwd(){
+      this.nav(config.FORGETPWD_PATH)
     },
-    resovePdc(data1) {
-      let pdc = data1.pdc;
-      if (pdc.length == 3) {
-        data1.province = pdc[0];
-        data1.city = pdc[1];
-        data1.area = pdc[2];
-      }
-      if (pdc.length == 2) {
-        data1.province = pdc[0];
-        data1.city = pdc[1];
+    pop(level) {
+      this.$router.back(level)
+    },
+    gohome(){
+      this.nav(config.HOME_PATH)
+    },
+    goCheckIn(){
+      if(!this.isLogined()){
+        this.nav(config.LOGIN_PATH)
       }
 
-      data1.province = (data1.province == undefined ? data1.city : data1.province);
+      this.nav(config.CHECKIN_PATH)
+    },
+    nav(path) {
+      this.$router.push(path)
+    },
 
-      return data1;
-    },
-    backHistory() {
-      this.$router.back(-1)
-    },
-    filterHTMLTag(msg) {
-      var msg = msg.replace(/<\/?[^>]*>/g, ''); //去除HTML Tag
-      msg = msg.replace(/[|]*\n/, '') //去除行尾空格
-      msg = msg.replace(/&npsp;/ig, ''); //去掉npsp
-      return msg;
-    }
 
   }
 }

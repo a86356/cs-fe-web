@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 
 import Home from '@/views/home/home.vue';
+import homeIndex from '@/views/home/index.vue';
 import VideoList from '@/views/video/list.vue';
 import VideoLastest from '@/views/video/lastest.vue';
 import VideoDetail from '@/views/video/detail.vue';
@@ -16,6 +17,7 @@ import Contactus from '@/views/contactus/index.vue';
 import SubscribeIndex from '@/views/subscribe/index.vue';
 import Setting from '@/views/member/setting.vue';
 import MemberInfo from '@/views/member/info.vue';
+import Checkin from '@/views/checkin/index.vue';
 
 
 Vue.use(Router)
@@ -27,7 +29,7 @@ var menu = [
   {
     path: '/cs', component: Home,
     children: [
-      { path: 'home', component: VideoLastest, title: "首页", icon: "", menu: true, name: 'home' },
+      { path: 'home', component: homeIndex, title: "首页", icon: "", menu: true, name: 'home' },
       { path: 'videolist', component: VideoList, title: "视频列表", icon: "", menu: true, name: 'videolist' },
       { path: 'videodetail', component: VideoDetail, title: "视频详情", icon: "", menu: true, name: 'videodetail' },
       { path: 'register', component: Register, title: "注册", icon: "", menu: true, name: 'register' },
@@ -40,6 +42,7 @@ var menu = [
       { path: 'subscribe', component: SubscribeIndex, title: "订阅", icon: "", menu: true, name: 'subscribe' },
       { path: 'setting', component: Setting, title: "个人设置", icon: "", menu: true, name: 'setting' },
       { path: 'memberinfo', component: MemberInfo, title: "个人中心", icon: "", menu: true, name: 'memberinfo' },
+      { path: 'checkin', component: Checkin, title: "签到", icon: "", menu: true, name: 'checkin' },
       { path: '*',redirect: '/cs/home' },
     ]
   },

@@ -2,18 +2,28 @@
   <div class="loveandcomment">
     <div class="love">
       <i class="iconfont icon-aixin"></i>
-      <span>1</span>
+      <span>{{lovenum}}</span>
     </div>
     <div class="comment">
       <i class="iconfont icon-pinglun1"></i>
-      <span>2</span>
+      <span>{{commentnum}}</span>
     </div>
   </div>
 </template>
 
 <script>
     export default {
-        name: "videolist"
+        name: "loveandcomment",
+        props:{
+            commentnum:{
+                type:String|Number,
+                default:''
+            },
+            lovenum:{
+                type:String|Number,
+                default:''
+            }
+        },
     }
 </script>
 

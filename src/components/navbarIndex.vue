@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <nav class="navbar navbar-custom navbar-static-top navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -14,27 +15,48 @@
 
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav" style="padding: 9px">
             <li :class="navIndex==1?'active':''"  @click="goHome">
               <i class="iconfont">&#xe9ce;</i>
               首页
             </li>
             <li :class="navIndex==2?'active':''"  @click="goNav(2,'/cs/videolist')"> <i class="iconfont">&#xe61f;</i>视频课程</li>
             <li :class="navIndex==3?'active':''"  @click="goNav(3,'/cs/postlist')"> <i class="iconfont">&#xe67b;</i>社区讨论</li>
-            <li :class="navIndex==3?'active':''"  @click="goNav(4)"> <i class="iconfont">&#xe604;</i>打卡签到</li>
-<!--            <li :class="navIndex==4?'active':''"  @click="goNav(5)"> <i class="iconfont">&#xe620;</i>在线文档</li>-->
-            <li :class="navIndex==5?'activered':''" class="aixin"  @click="goNav(6)">
+            <li :class="navIndex==4?'active':''"  @click="goNav(4,'/cs/checkin')"> <i class="iconfont">&#xe604;</i>打卡签到</li>
+<!--        <li :class="navIndex==4?'active':''"  @click="goNav(5)"> <i class="iconfont">&#xe620;</i>在线文档</li>-->
+            <li :class="navIndex==5?'active':''" class="aixin"  @click="goNav(6,'/cs/subscribe')">
               <i class="iconfont icon-aixin"></i>
               订阅本站
             </li>
-            <li :class="navIndex==6?'activered':''"   @click="goNav(6)"><i class="iconfont">&#xe617;</i>
-              联系我们</li>
+            <li :class="navIndex==6?'active':''"   @click="goNav(6,'/cs/contactus')"><i class="iconfont">&#xe617;</i>
+              联系我们
+            </li>
+
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <button type="button" class="btn btn-link">发帖</button>
-            <button type="button" class="btn btn-default trans">注册</button>
-            <button type="button" class="btn btn-primary trans">登录</button>
+
+          <ul class="nav navbar-nav navbar-right" v-show="!islogin">
+
+            <li style="margin: 0 5px;">
+              <button type="button" class="btn btn-default trans" @click="goRegister" >注册</button>
+            </li>
+            <li>
+              <button type="button" class="btn btn-primary trans" @click="goLogin">登录</button>
+            </li>
           </ul>
+
+          <ul class="nav navbar-nav navbar-right a" v-show="islogin">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="iconfont">&#xe603;</i>{{getUsername}} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">基本设置</a></li>
+                <li><a href="#">个人信息</a></li>
+                <li role="separator" class="divider"></li>
+                <li @click="logout"><a href="#">退出</a></li>
+              </ul>
+            </li>
+          </ul>
+
+
         </div>
       </div>
     </nav>
@@ -45,16 +67,26 @@
 </template>
 
 <script>
+    import config from "../config/config";
+
+    import {mapGetters,mapState} from 'vuex'
+
     export default {
         name: "Login",
         data() {
             return {
                 navIndex:1,
-
             };
         },
         created() {
 
+        },
+        computed:{
+            // ...mapState({
+            //     islogin:state=>state.islogin,
+            //     username:state=>state.username
+            // }),
+            ...mapGetters(['islogin','getUsername'])
         },
         methods: {
             goNav(index,path){
@@ -64,6 +96,19 @@
             },
             goHome(){
                 this.$router.push({path:'/home'});
+            },
+            logout(){
+                let that= this;
+                this.$Modal.confirm({
+                    title:"退出",
+                    content:"是否退出",
+                    onOk(){
+                        that.$store.commit('logout')
+                    },
+                    onCancel(){
+
+                    }
+                })
             }
 
         }
@@ -78,7 +123,7 @@
     background: #fff;
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
     border-bottom: 2px solid @mainColor;
-    z-index: 999999;
+    z-index: 5000;
     .container{
       .navbar-brand{
         font-weight: bold;
@@ -156,5 +201,16 @@
 
   .navbar-fixed-bottom .navbar-collapse, .navbar-fixed-top .navbar-collapse {
     max-height: 400px;
+  }
+
+
+  .navbar-right li{
+    padding: 0!important;
+  }
+  .navbar-custom .container .navbar-nav li{
+    padding: 0 10px;
+  }
+  .navbar-header{
+    padding: 9px 0;
   }
 </style>

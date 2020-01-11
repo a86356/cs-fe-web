@@ -1,7 +1,7 @@
 
 let v = {
   vPhone: function (v) {
-    let reg = /^1[3|4|5|7|8]\d{9}$/;
+    let reg = /^1[0-9]\d{9}$/;
     if (reg.test(v)) {
       return true;
     }
@@ -43,6 +43,12 @@ let v = {
       return "省份不能为空";
     }
     return true;
+  },
+  vshortCharater(value,len,msg){
+    if(value.length<len){
+      return msg;
+    }
+    return  true;
   },
   vCity: function (v) {
     if (!v) {
@@ -132,35 +138,63 @@ const run  = (rules,data) => {
 
 const runwithobj = (rules, data) => {
 
+  if(rules.length==0)
+  {
+    return {
+      'result':"fail",
+      "msg":"规则没有传入",
+      'key':"nokey"
+    }
+  }
+
+
   for (let i = 0; i < rules.length; i++) {
+
     rules[i][3] = data[rules[i][0]];
 
+
     let item = rules[i]
+
     let type = rules[i][1];
     let msg = rules[i][2];
     let value = rules[i][3];
+    let ret;
 
-    if (type == 'required') {
-      let ret = v.vNonvoid(value, msg);
-      if (ret != true) {
-        return {
-          'result':"fail",
-          "msg":ret,
-          'key':item[0]
+    switch (type) {
+      case 'required':
+         ret = v.vNonvoid(value, msg);
+        if (ret != true) {
+          return {
+            'result':"fail",
+            "msg":ret,
+            'key':item[0]
+          }
         }
-      }
-    }
-    if (type == 'phone') {
-      let ret = v.vPhone(value, msg);
-      if (ret != true) {
-
-
-        return {
-          'result': "fail",
-          "msg": ret,
-          'key': item[0]
+        break;
+      case 'phone':
+        ret = v.vPhone(value, msg);
+        if (ret != true) {
+          return {
+            'result': "fail",
+            "msg": ret,
+            'key': item[0]
+          }
         }
-      }
+        break;
+      case 'email':
+        ret = v.vEmail(value, msg);
+        if (ret != true) {
+          return {
+            'result': "fail",
+            "msg": ret,
+            'key': item[0]
+          }
+        }
+        break;
+      default:
+        continue;
+        break;
+
     }
   }
   return {

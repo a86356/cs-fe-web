@@ -70,8 +70,17 @@ export function createApi() {
 
           if (code != '0') {
 
-            Context.showmsg('error', response.data.msg);
-            reject(response.data);
+
+            if(code==-1){
+              // 用户未登录的
+
+              
+            }else{
+              Context.showmsg('error', response.data.msg);
+              reject(response.data);
+            }
+
+
             return;
           }
 

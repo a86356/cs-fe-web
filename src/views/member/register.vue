@@ -5,59 +5,105 @@
         <div class="panel-heading"><i class="iconfont">&#xe625;</i>
           用户注册</div>
         <div class="panel-body">
-          <form>
+          <div>
             <div class="form-group">
               <label >用户名</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="请输入用户名">
+              <input  type="text" class="form-control" v-model="data1.username" placeholder="请输入用户名">
             </div>
             <div class="form-group">
               <label >昵称</label>
-              <input type="text" class="form-control"  placeholder="请输入昵称">
+              <input  type="text" class="form-control" v-model="data1.nickname"  placeholder="请输入昵称">
             </div>
             <div class="form-group">
               <label>邮箱</label>
-              <input type="email" class="form-control"  placeholder="请输入邮箱">
+              <input  type="email" class="form-control" v-model="data1.email"  placeholder="请输入邮箱">
             </div>
             <div class="form-group">
               <label >手机号</label>
-              <input type="text" class="form-control"  placeholder="请输入手机号">
+              <input  type="text" class="form-control" v-model="data1.phone"  placeholder="请输入手机号">
             </div>
             <div class="form-group">
-              <button type="button" class="btn btn-default ">点击发送验证码</button>
+              <send-code :phone="data1.phone" type="2"></send-code>
             </div>
             <div class="form-group">
               <label >验证码</label>
-              <input type="text" class="form-control"  placeholder="请输入验证码">
+              <input  type="text" class="form-control" v-model="data1.code" placeholder="请输入验证码">
             </div>
             <div class="form-group">
               <label >密码</label>
-              <input type="password" class="form-control"  placeholder="请输入不少于6位数的密码" value="">
+              <input  type="password" class="form-control" v-model="data1.password"  placeholder="请输入不少于6位数的密码" value="">
             </div>
-            <button type="submit" class="btn btn-register" >注册</button>
-          </form>
+            <button type="submit" class="btn btn-register" @click="register">注册</button>
+          </div>
         </div>
         <div class="panel-footer">
-          <button type="button" class="btn btn-link">
-            <i class="iconfont">&#xe7bc;</i>
-            返回首页
-          </button>
-          <button type="button" class="btn btn-link">
-            <i class="iconfont">&#xe600;</i>
+          <go-home></go-home>
+          <go-login></go-login>
+          <go-forgetpwd></go-forgetpwd>
 
-            用户登录
-          </button>
-          <button type="button" class="btn btn-link">
-            <i class="iconfont">&#xe614;</i>
-
-            找回密码</button>
         </div>
       </div>
     </div>
 </template>
 
 <script>
+
+    import goHome from "../../components/member/goHome";
+    import goRegister from "../../components/member/goRegister";
+    import goLogin from "../../components/member/goLogin";
+    import goForgetpwd from "../../components/member/goForgetpwd";
+    import sendCode from "../../components/member/sendcode";
+
+
     export default {
-        name: "index"
+        name: "index",
+        data(){
+            return {
+                rule: {
+                    username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+                    nickname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
+                    email: [{ email: true, message: "请输入邮箱", trigger: "blur" }],
+                    phone: [{ phone: true, message: "手机号格式错误", trigger: "blur" }],
+                    code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+                    password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+                },
+            }
+        },
+        components:{
+            goHome,
+            goRegister,
+            goLogin,
+            goForgetpwd,
+            sendCode
+        },
+        mounted() {
+
+        },
+        methods:{
+            register(){
+              let rule = this.switchRule(this.rule);
+              let ret=this.$validator.runwithobj(rule,this.data1);
+              if(ret.result!='success'){
+                  this.showmsg('info',ret.msg);
+                  return;
+              }
+
+
+              this.$api({
+                  service:"member.register",
+                  ...this.data1
+              }).then(res=>{
+                  this.showmsg('success','注册成功');
+
+                  let that =this;
+                  setTimeout(()=>{
+                      this.gohome();
+                  },2000)
+
+                  console.log(res);
+              })
+            }
+        }
     }
 </script>
 

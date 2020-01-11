@@ -4,33 +4,42 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-6">
-
-
           <div class="top">
-            <div class="tit">帖帖子的帖子的帖子的帖子的的帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子的帖子的子的标题</div>
+            <div class="tit">{{data1.title}}</div>
             <div class="info">
-              发布于19小时前 / 最新评论19小时之前 / 评论数:1 / 收藏数:1
+              发布于{{data1.create_time|beforedateline}}前  / 阅读数:{{data1.views}} / 收藏数:{{data1.loves}} / 评论数:{{data1.commentnum}}
             </div>
-            <div class="cnt">
-              栈是是的数据到世界第哦啊三角地阿斯顿
-            </div>
+            <publishcontent :value="data1.content_md"></publishcontent>
+
             <div class="love">
 
-              <button class="btn btn-default"> <i class="iconfont icon" >&#xe613;</i><span>收藏 | 0</span></button>
+              <button class="btn btn-default" @click="toggleCollection"><i class="iconfont icon" :class="isCollected?'active':''" >&#xe663;</i><span>收藏 | {{data1.loves}}</span></button>
             </div>
             <div class="loveperson clearfix">
-              <div class="item">
+              <div class="item" v-for="(item,index) in loverlist" :key="index">
                 <div class="avatarwrap">
-                  <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
+                  <img class="img-circle" :src="item.avatar_url" alt="">
                 </div>
               </div>
             </div>
           </div>
 
-         <commentitem></commentitem>
-         <commentpublishbox></commentpublishbox>
+         <commentitem :id="this.id" v-if="id>0" @setquote="setquote" ref="commentitem"></commentitem>
 
-        </div>
+         <quoteitem @clearquote="clearquote" :item="quote_item"></quoteitem>
+
+
+          <div class="bottom">
+
+            <div class="edit">
+              <mdeditor @change="changemd" ref="mdeditor"></mdeditor>
+            </div>
+            <div class="btnwrap">
+              <button class="btn btn-primary" @click="publish">发布评论</button>
+            </div>
+          </div>
+
+      </div>
 
 
         <div class="col-lg-4 col-md-4 col-sm-6 right">
@@ -39,12 +48,12 @@
 
               <div class="panel-body introduction">
                   <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
+                    <img class="img-circle" :src="data1.pub_avatar_url" alt="">
                   </div>
-                  <div class="name">张三@xx公司</div>
+                  <div class="name">{{data1.pub_nickname}}</div>
               </div>
               <div class="contact">
-                <i class="iconfont" style="font-size: 30px;">&#xe690;</i>
+                <i class="iconfont" style="font-size: 30px;" @click="goGithub">&#xe690;</i>
               </div>
             </div>
 
@@ -57,31 +66,9 @@
                 <span >最新帖子</span>
               </div>
               <div class="panel-body panelbd">
-                <div class="item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-                    张三哈哈哈张三哈哈哈张三哈哈哈张三哈哈哈张三哈哈哈张三哈哈哈三哈哈哈张三哈哈哈张三哈三哈哈哈张三哈哈哈张三哈三哈哈哈张三哈哈哈张三哈三哈哈哈张三哈哈哈张三哈
-                  </div>
-
-                </div>
-                <div class="item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-                    <div class="r-tit" style="line-height: 45px">linux的基本操作</div>
-                    <div class="b">
-                    </div>
-                  </div>
-
-                </div>
+                <getnewarticle></getnewarticle>
               </div>
             </div>
-
-
-
 
           </div>
         </div>
@@ -94,18 +81,176 @@
 <script>
 
     import commentitem from "../../components/comment/commentitem";
-    import commentpublishbox from "../../components/comment/commentpublishbox";
+    import publishcontent from "../../components/publishcontent";
+    import getnewarticle from "../../components/getnewarticle";
+    import quoteitem from "../../components/comment/quoteitem";
+    import mdeditor from "../../components/mdeditor";
 
     export default {
         data(){
             return {
                 content:"",
+                id:"0",
+                isCollected:false,
+                loverlist:[],
+                writerInfo:{},
+                quote_id:'-1',
+                quote_item:{},
+                type:1,
+                commentList:[],
+                commentCount:0
             }
         },
         components:{
             commentitem,
-            commentpublishbox
+            mdeditor,
+            publishcontent,
+            getnewarticle,
+            quoteitem
+        },
+        mounted() {
+            let {id} =  this.$route.query
+            this.id=id;
+            this.init();
+            this.increaseview();
+        },
+        watch: {
+            $route: function(newVal, oldVal) {
+                if(newVal!=oldVal){
+                    this.init();
+                    this.goTopNow();
+                }
+            }
+        },
+        methods:{
+
+            init(){
+                let {id} =  this.$route.query
+                this.id=id;
+                this.loadDetail();
+                this.getCollection();
+                this.getalllovers();
+            },
+            changemd(e){
+
+                this.content=e;
+            },
+            setquote(item){
+
+                this.quote_id=item.id;
+                this.quote_item=item;
+            },
+            clearquote(){
+                this.quote_id=-1;
+                this.quote_item={};
+            },
+            increaseview(){
+
+                this.$api({
+                    service:"article.increaseview",
+                    main_id:this.id,
+                    type:1
+                }).then(res=>{
+
+                })
+
+            },
+            publish(){
+
+              if(this.content==''){
+                  this.showmsg('info','未填写内容');
+                  return;
+              }
+              if(this.content.length<3){
+                  this.showmsg('info','评论内容不少于3个字');
+                  return;
+              }
+              this.checkLogin();
+
+              this.$api({
+                  service:"comment.publish",
+                  main_id:this.id,
+                  cnt:this.content,
+                  quote_id:this.quote_id,
+                  type:this.type,
+              }).then(res=>{
+                  this.showmsg('success','发布成功');
+                  this.goTopNow();
+                  this.$refs.mdeditor.clear();
+                  this.$refs.commentitem.getCommentList();
+                  this.clearquote();
+
+              })
+
+            },
+            loadDetail(){
+
+                this.$api({
+                    service:"article.getone",
+                    id:this.id
+                }).then(res=>{
+                    this.data1=res.article;
+                    this.writerInfo=res.writerinfo;
+
+                })
+            },
+            getalllovers(){
+
+                this.$api({
+                    service:"article.getalllovers",
+                    sub_id:this.id,
+                    type:"1"
+                }).then(res=>{
+                   this.loverlist=res.list;
+                })
+
+            },
+            getCollection(){
+
+                this.$api({
+                    service:"collect.getonecollection",
+                    sub_id:this.id,
+                    type:"1"
+                }).then(res=>{
+                    let {id}  =res;
+                    if(id==0){
+                        this.isCollected=false
+                    }else{
+                        this.isCollected=true
+                    }
+                })
+            },
+
+            toggleCollection(){
+
+                this.checkLogin();
+
+                if(this.isCollected){
+                    this.$api({
+                        service:"collect.cancelcollection",
+                        sub_id:this.id,
+                        type:"1"
+                    }).then(res=>{
+                        this.isCollected=false
+
+                        this.loadDetail();
+                        this.getalllovers();
+                    })
+                }else{
+                    this.$api({
+                        service:"collect.addcollection",
+                        sub_id:this.id,
+                        type:"1"
+                    }).then(res=>{
+                        this.isCollected=true
+                        this.loadDetail();
+                        this.getalllovers();
+                    })
+                }
+            },
+
         }
+
 
 
     };
@@ -123,9 +268,10 @@
     margin-bottom: 15px;
     .shadow-sm;
     .tit{
-      line-height: 30px;
       color: @title;
       font-weight: bold;
+      font-size: 30px;
+      line-height: 1.5;
     }
     .info{
       line-height: 40px;
@@ -151,6 +297,9 @@
       }
       span{
         font-size: 16px;
+      }
+      .active{
+        color: @red;
       }
     }
     .loveperson{
@@ -242,21 +391,7 @@
       color: @subColor;
     }
   }
-  .panelbd{
-    .item{
-      display: flex;
-      padding-bottom: 10px;
-      border-bottom: 1px solid @border;
-      margin-bottom: 10px;
-      .r{
-        margin-left: 15px;
-        line-height: 25px;
-        overflow: hidden;
-        height: 50px;
-        .twolineellips;
-      }
-    }
-  }
+
   .comnu{
     margin-top: 50px;
     .left{
@@ -345,5 +480,6 @@
 
     }
   }
+
 
 </style>

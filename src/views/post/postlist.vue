@@ -13,64 +13,40 @@
             </div>
             <div class="panel-body">
               <div class="content">
-                <div class="box-item">
+
+                <div class="box-item" v-for="(item,index) in list1" :key="index">
                   <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
+                    <img class="img-circle" :src="item.avatar_url" alt="">
                   </div>
                   <div class="r">
-                    <div class="tit">
-                      分享Ant Design Pro 企业级后台实战视频已经录制完结，这是课程目录
+                    <div class="tit" @click="goDetail(item)">
+                      {{item.title}}
                     </div>
                     <div class="bottom">
-                      <div class="type">签到</div>
-                      <div class="time">发布于1小时前</div>
+                      <div class="type" :class="item.type=='1'?'checkin':'hide'">签到</div>
+                      <div class="type" :class="item.type=='2'?'comment':'hide'">文章</div>
+                      <div class="type" :class="item.type=='3'?'article':'hide'">评论</div>
+                      <div class="type" :class="item.type=='4'?'reply':'hide'">回复</div>
+                      <div class="type" :class="item.top=='2'?'top':'hide'">置顶</div>
+
+                      <div class="time">{{item.create_time|beforedateline}}之前</div>
                     </div>
-                    <loveandcomment></loveandcomment>
+
+                    <div v-if="item.type=='3'">
+                      <loveandcomment></loveandcomment>
+                    </div>
                   </div>
                 </div>
+
               </div>
-              <nav aria-label="Page navigation">
-                <ul class="pagination">
-                  <li>
-                    <a href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  <li><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li>
-                    <a href="#" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              <pagination :count="counts" v-if="counts>0"  @setpage="setpage"></pagination>
             </div>
           </div>
 
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6 right">
           <div class="">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <i class="iconfont">&#xe6d1;</i>
-                <span>课堂小提示</span>
-              </div>
-              <div class="panel-body">
-                行者课堂是一个分享技术的社区,希望大家一起共同进步,共同成长
-              </div>
-              <div class="panel-footer" style="display: flex;justify-content: space-around">
-                <button class="btn  btn-default">
-                  <i class="iconfont">&#xe60a;</i>
-                  签到打卡</button>
-                <button class="btn  btn-info">
-                  <i class="iconfont">&#xe6b0;</i>
-                  发布帖子</button>
-              </div>
-            </div>
+            <classtips></classtips>
 
           </div>
           <div class="right-box">
@@ -78,38 +54,12 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <i class="iconfont">&#xe62e;</i>
-                <span >活跃作者</span>
+                <span >最新文章</span>
               </div>
               <div class="panel-body">
-                <div class="item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-
-                    <div class="r-tit">张三哈哈哈</div>
-                    <div class="b">
-                      <div class="name">前端@xx公司</div>
-                    </div>
-
-                  </div>
-
-                </div>
-                <div class="item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-                    <div class="r-tit" style="line-height: 45px">linux的基本操作</div>
-                    <div class="b">
-                    </div>
-                  </div>
-
-                </div>
+                <getnewarticle></getnewarticle>
               </div>
             </div>
-
-
 
 
           </div>
@@ -124,10 +74,53 @@
     import videolist from "../../components/videolist";
     import loveandcomment from "../../components/common/loveandcomment";
 
+    import pagination from "../../components/pagination";
+    import getnewarticle from "../../components/getnewarticle";
+
+    import classtips from "../../components/classtips";
+
     export default {
         components:{
             videolist,
-            loveandcomment
+            loveandcomment,
+            pagination,
+            classtips,
+            getnewarticle
+        },
+        data(){
+          return {
+
+          }
+        },
+        mounted() {
+            this.loadlist()
+        },
+        methods:{
+            loadlist(){
+                this.$api({
+                    service:"community.getlist",
+                    page:this.page
+                }).then(res=>{
+                    this.list1=res.list;
+                    this.counts= res.count;
+                })
+            },
+            goDetail(item){
+                let {type} = item;
+
+                if(type=='1'){
+                    this.goCheckIn()
+                }
+                if(type=='2'){
+                    this.goArticleDetail(item.id)
+                }
+
+            },
+            setpage(params){
+                this.goTopNow();
+                this.page=params.page;
+                this.loadlist();
+            },
         }
 
     };
@@ -138,6 +131,22 @@
   @import "../../assets/css/common.less";
 
 
+  .checkin{
+    background: @teal;
+  }
+  .comment{
+    background: @primary;
+  }
+  .article{
+    background: @success;
+  }
+  .reply{
+    background: @yellow;
+  }
+  .top{
+    background: @orange;
+    margin-left: 5px;
+  }
 
   .comnu{
     margin-top: 50px;
@@ -168,6 +177,10 @@
         .tit{
           line-height: 30px;
           color: @title;
+          cursor: pointer;
+          &:hover{
+            text-decoration: underline;
+          }
         }
         .bottom{
           display: flex;
@@ -178,10 +191,10 @@
           }
           .type{
             color: #fff;
-            background: @mainColor;
+
             font-size: 12px;
-            padding: 0 8px;
-            border-radius: 8px;
+            padding: 0 6px;
+            border-radius: 3px;
           }
         }
       }
@@ -211,6 +224,10 @@
               color: @title;
               overflow: hidden;
               width: 100%;
+              cursor: pointer;
+              &:hover{
+                text-decoration: underline;
+              }
             }
             .b{
               display: flex;

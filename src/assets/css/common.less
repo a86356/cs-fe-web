@@ -2,7 +2,19 @@
 
 *{
   box-sizing: border-box;
+  outline: 0;
 }
+*{outline:none!important;}
+
+
+:focus {outline:none!important;}
+
+//body {
+//  -moz-user-select: none;
+//  -webkit-user-select: none;
+//  -ms-user-select: none;
+//  user-select: none;
+//}
 
 .tac{
   text-align: center;
@@ -85,6 +97,13 @@ ul{
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
 
+
+.ml5{
+  margin-left: 5px;
+}
+.mr5{
+  margin-right: 5px;
+}
 .shadow-sm{
   box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
 }
@@ -156,7 +175,7 @@ ul{
   position: absolute;
   right: 0;
   top: 0;
-  z-index: 99;
+  z-index: 9;
 }
 
 .twolineellips{
@@ -175,8 +194,48 @@ ul{
   outline: none;
 }
 .dplayer-logo{
-  right: 20px !important;
-  bottom: 10px !important;
-  width: 100px;
-  height: 100px;
+  left: 0px !important;
+  top: 0px !important;
+  width: 120px;
+  height: 120px;
+}
+.v-note-wrapper{
+  box-shadow: none!important;
+  border: 1px solid @border!important;
+  min-width: 100%;
+  min-height: 100%;
+  margin-top: 10px;
+}
+.markdown-body pre{
+  background: #000!important;
+  color: #fff;
+  border-radius: 5px;
+  position: relative;
+}
+.markdown-body pre:after{
+  //position: absolute;
+  //right: 20px;
+  //top: 20px;
+  //content: '单击黑色部分复制代码';
+  //background-color: #999;
+  //color: #fff;
+  //padding: 7px 8px;
+}
+
+.dplayer-logo img {
+  max-width: 80px!important;
+  max-height:80px!important;
+  background: none;
+
+}
+
+.ivu-message{
+  z-index: 5001!important;
+}
+
+.click{
+  cursor: pointer;
+  &:hover{
+    text-decoration: underline;
+  }
 }
