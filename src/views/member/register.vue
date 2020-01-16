@@ -33,6 +33,17 @@
               <label >密码</label>
               <input  type="password" class="form-control" v-model="data1.password"  placeholder="请输入不少于6位数的密码" value="">
             </div>
+            <div class="form-group">
+              <label >头像</label>
+              <div>
+                <div>
+                  <input type="file" style="border:none"  class="form-control" @change="uploadavatar" >
+                </div>
+                <div  class="avatarwrap" style="margin-top: 20px;margin-bottom:">
+                  <img class="img-circle" style="max-width: 100%"  :src="data1.avatar_url" alt="">
+                </div>
+              </div>
+            </div>
             <button type="submit" class="btn btn-register" @click="register">注册</button>
           </div>
         </div>
@@ -65,7 +76,8 @@
                     email: [{ email: true, message: "请输入邮箱", trigger: "blur" }],
                     phone: [{ phone: true, message: "手机号格式错误", trigger: "blur" }],
                     code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
-                    password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+                    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+                    avatar_url: [{ required: true, message: "请上传头像", trigger: "blur" }],
                 },
             }
         },
@@ -88,20 +100,35 @@
                   return;
               }
 
-
+              let that= this;
               this.$api({
                   service:"member.register",
                   ...this.data1
               }).then(res=>{
                   this.showmsg('success','注册成功');
 
-                  let that =this;
-                  setTimeout(()=>{
-                      this.gohome();
-                  },2000)
-
-                  console.log(res);
+                  this.$Modal.info({
+                      title:"登录",
+                      content:"是否立即登录",
+                      onOk(){
+                          that.login();
+                      },
+                      onCancel:function () {
+                          that.goHome();
+                      }
+                  })
               })
+            },
+            login(){
+                this.$api({
+                    service:"member.login",
+                    account:this.data1.phone,
+                    password:this.data1.password
+                }).then(res=>{
+                    this.showmsg('success','登录成功');
+                    this.$store.commit('login',{auth_key:res.auth_key,data:res.data})
+                    this.gohome();
+                })
             }
         }
     }

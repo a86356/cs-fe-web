@@ -1,7 +1,8 @@
 export default
 {
-
-    baseURL: "http://localhost/csapi/web/index.php/v2/index/index",
+    //   baseURL:"http://api.cs1024.com/index.php/v1/index/index",
+  //  baseURL: "http://localhost/csapi/web/index.php/v2/index/index",
+    baseURL: "http://api.cs1024.com/index.php/v2/index/index",
     uploadPicUrl: "http://img.cs1024.com/uploadpic.php",
     TOKEN_KEY: 'token',
     USERINFO: 'userinfo',
@@ -14,5 +15,6 @@ export default
     ARTICLEDETAIL_PATH:'/cs/postdetail',
     VIDEODETAIL_PATH:'/cs/videodetail',
     SUBSCRIBE_PATH:'/cs/subscribe',
-    SETTING_PATH:'/cs/setting'
+    SETTING_PATH:'/cs/setting',
+    BEFOREROUTER:'beforerouter'
 }

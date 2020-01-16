@@ -58,6 +58,12 @@
               })
           },
           submit(){
+
+              if(!this.isLogined()){
+                  this.goLogin()
+                  return;
+              }
+
               let {content,title,typeId} = this;
 
               if(title==''){

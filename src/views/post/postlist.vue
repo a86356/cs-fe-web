@@ -15,29 +15,12 @@
               <div class="content">
 
                 <div class="box-item" v-for="(item,index) in list1" :key="index">
-                  <div class="avatarwrap">
-                    <img class="img-circle" :src="item.avatar_url" alt="">
-                  </div>
-                  <div class="r">
-                    <div class="tit" @click="goDetail(item)">
-                      {{item.title}}
-                    </div>
-                    <div class="bottom">
-                      <div class="type" :class="item.type=='1'?'checkin':'hide'">签到</div>
-                      <div class="type" :class="item.type=='2'?'comment':'hide'">文章</div>
-                      <div class="type" :class="item.type=='3'?'article':'hide'">评论</div>
-                      <div class="type" :class="item.type=='4'?'reply':'hide'">回复</div>
-                      <div class="type" :class="item.top=='2'?'top':'hide'">置顶</div>
+                  <avatarimg :avatar_url="item.avatar_url" :tips="item.nickname"></avatarimg>
 
-                      <div class="time">{{item.create_time|beforedateline}}之前</div>
-                    </div>
+                  <dynamicitemcnt :item="item"></dynamicitemcnt>
 
-                    <div v-if="item.type=='3'">
-                      <loveandcomment></loveandcomment>
-                    </div>
-                  </div>
+
                 </div>
-
               </div>
               <pagination :count="counts" v-if="counts>0"  @setpage="setpage"></pagination>
             </div>
@@ -47,7 +30,6 @@
         <div class="col-lg-4 col-md-4 col-sm-6 right">
           <div class="">
             <classtips></classtips>
-
           </div>
           <div class="right-box">
 
@@ -78,6 +60,9 @@
     import getnewarticle from "../../components/getnewarticle";
 
     import classtips from "../../components/classtips";
+    import avatarimg from "../../components/avatarimg";
+    import dynamicitemcnt from "../../components/dynamicitemcnt";
+
 
     export default {
         components:{
@@ -85,7 +70,9 @@
             loveandcomment,
             pagination,
             classtips,
-            getnewarticle
+            getnewarticle,
+            avatarimg,
+            dynamicitemcnt
         },
         data(){
           return {
@@ -105,17 +92,7 @@
                     this.counts= res.count;
                 })
             },
-            goDetail(item){
-                let {type} = item;
 
-                if(type=='1'){
-                    this.goCheckIn()
-                }
-                if(type=='2'){
-                    this.goArticleDetail(item.id)
-                }
-
-            },
             setpage(params){
                 this.goTopNow();
                 this.page=params.page;
@@ -131,22 +108,7 @@
   @import "../../assets/css/common.less";
 
 
-  .checkin{
-    background: @teal;
-  }
-  .comment{
-    background: @primary;
-  }
-  .article{
-    background: @success;
-  }
-  .reply{
-    background: @yellow;
-  }
-  .top{
-    background: @orange;
-    margin-left: 5px;
-  }
+
 
   .comnu{
     margin-top: 50px;
@@ -174,29 +136,7 @@
         .avatarwrap{
           margin-right: 15px;
         }
-        .tit{
-          line-height: 30px;
-          color: @title;
-          cursor: pointer;
-          &:hover{
-            text-decoration: underline;
-          }
-        }
-        .bottom{
-          display: flex;
-          line-height: 25px;
-          .time{
-            margin-left: 10px;
-            color: @subtitle;
-          }
-          .type{
-            color: #fff;
 
-            font-size: 12px;
-            padding: 0 6px;
-            border-radius: 3px;
-          }
-        }
       }
     }
     .right{

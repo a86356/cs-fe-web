@@ -10,7 +10,7 @@
         </div>
         <div class="r">
           <div class="tit">
-            <span class="floor">#{{item.pub_floor}}</span>
+            <span class="floor" :id="'#'+item.pub_floor">#{{item.pub_floor}}</span>
             <span class="name">{{item.pub_nickname}}</span>
             <span class="time">{{item.create_time | cntime}}</span>
             <i class="iconfont icon" @click="quote(item)">&#xe717;</i>
@@ -24,11 +24,10 @@
             </div>
 
             <publishcontent :value="item.pub_cnt"></publishcontent>
-
           </div>
         </div>
       </div>
-
+      <pagination :count="commentCount" @setpage="setpage" v-if="commentCount>0"></pagination>
       <div class="item nomsg" v-if="commentList.length==0">
         暂无评论,快来发布吧~
       </div>
@@ -38,6 +37,7 @@
 
 <script>
     import publishcontent from "../publishcontent";
+    import pagination from "../pagination";
     export default {
         data(){
             return {
@@ -45,7 +45,6 @@
                 commentList:[],
                 commentCount:0,
                 page:1,
-                type:1,
 
             }
         },
@@ -53,10 +52,15 @@
         props:{
           id:{
               type:String|Number
+          },
+          type:{
+              type:String|Number,
+              default:'1'
           }
         },
         components:{
-            publishcontent
+            publishcontent,
+            pagination
         },
         mounted() {
             this.getCommentList();
@@ -70,12 +74,16 @@
                     page:this.page
                 }).then(res=>{
                     this.commentList=res.list;
-
                     this.commentCount = res.count;
                 })
             },
             quote(item){
+                this.showNoticeInfo('快去底部评论框填写回复内容吧~~~~');
                 this.$emit('setquote',item)
+            },
+            setpage(params){
+                this.page=params.page;
+                this.getCommentList();
             }
         }
 

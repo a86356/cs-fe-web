@@ -46,7 +46,22 @@ Vue.filter('cntime',function (fmt) {
   var second = now.getSeconds();
   return year + "年" + month + "月" + date + " " + hour + ":" + minute + ":" + second;
 })
+Vue.filter('cntime_ymd',function (fmt) {
+  var now = new Date(fmt * 1000);
 
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var date = now.getDate();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
+  return year + "年"+month + "月" + date + "日";
+})
+
+
+Vue.filter('keeptwo',function (fmt) {
+  return  fmt.toFixed(2)
+})
 
 Vue.filter('beforedateline', function (value) {
 
@@ -114,6 +129,10 @@ import store from '../src/store/index'
 import Validator from '@/utils/validator.js'
 
 Vue.prototype.$validator=Validator;
+
+
+
+
 
 /* eslint-disable no-new */
 var vue = new Vue({

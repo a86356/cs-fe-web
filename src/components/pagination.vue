@@ -20,6 +20,10 @@
         props:{
             count:{
                 type:String|Number,
+            },
+            pagename:{
+                type:String|Number,
+                default:''
             }
         },
         data(){
@@ -47,8 +51,10 @@
         methods:{
             changePage(page){
 
+              if(this.current==page)return;
+
               this.current=page;
-              this.$emit('setpage',{page:page});
+              this.$emit('setpage',{page:page,pagename:this.pagename});
 
             },
             goPrev(){

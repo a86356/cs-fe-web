@@ -68,6 +68,7 @@
                 }).then(res=>{
                     this.showmsg('success','登录成功');
                     this.$store.commit('login',{auth_key:res.auth_key,data:res.data})
+
                     this.gohome();
                 })
             }

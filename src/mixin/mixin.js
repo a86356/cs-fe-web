@@ -1,6 +1,7 @@
 import Validator from '@/utils/validator.js'
 import config from "../config/config";
-import {getCacheData} from "../utils/cache";
+import {getCacheData, setCacheData} from "../utils/cache";
+import axios from 'axios';
 
 
 
@@ -11,7 +12,6 @@ export default {
       counts:0,
       data1:{},
       falseV:false,
-
 
       page:1
     }
@@ -24,15 +24,28 @@ export default {
     publistpost(){
       if(!this.isLogined()){
         this.nav(config.LOGIN_PATH)
+        return;
       }
       this.nav(config.PUBLISHPOST_PATH)
     },
     checkLogin(){
       if(!this.isLogined()){
-
-
-        this.nav(config.LOGIN_PATH)
+        this.goLogin();
       }
+    },
+    uploadavatar(event){
+
+      let file=event.target.files[0]
+      let formData = new FormData();
+      formData.append("file", file);
+      axios.post(config.uploadPicUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(res => {
+        this.$set(this.data1,'avatar_url',res.data.url)
+
+      })
     },
     goSetting(){
       this.nav(config.SETTING_PATH);
@@ -55,6 +68,17 @@ export default {
     goSubscribe(){
       this.nav(config.SUBSCRIBE_PATH)
     },
+    setquote(item){
+      this.quote_id=item.id;
+      this.quote_item=item;
+    },
+    clearquote(){
+      this.quote_id=-1;
+      this.quote_item={};
+    },
+    changemd(e){
+      this.content=e;
+    },
     showmsg(type, msg) {
       switch (type) {
         case "info":
@@ -74,6 +98,9 @@ export default {
           break;
       }
     },
+    setCache(key,value){
+      setCacheData(key,value)
+    },
     switchRule(rule){
       let arr=[];
       Object.keys(rule).forEach(function(key){
@@ -92,8 +119,9 @@ export default {
       });
       return arr;
     },
-    goArticleDetail(id){
-      this.$router.replace({path:config.ARTICLEDETAIL_PATH,query:{id:id}})
+    goArticleDetail(id,floor_id=''){
+
+      this.$router.push({path:config.ARTICLEDETAIL_PATH,query:{id:id,floor_id:floor_id}})
     },
     isLogined(){
       if(this.getCache(config.TOKEN_KEY))
@@ -119,12 +147,18 @@ export default {
         top: 100,
       })
     },
+
     goRegister(){
       this.nav(config.REGISTER_PATH)
     },
     goLogin(){
+
+//      console.log(window.document.location.pathname)
+ //     this.setCache(config.BEFOREROUTER,window.document.location.pathname)
+
       this.nav(config.LOGIN_PATH)
     },
+
     goFotgetpwd(){
       this.nav(config.FORGETPWD_PATH)
     },

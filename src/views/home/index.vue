@@ -20,24 +20,15 @@
             </div>
             <div class="panel-body">
               <div class="content">
-                <div class="box-item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-                    <div class="tit">
-                      分享Ant Design Pro 企业级后台实战视频已经录制完结，这是课程目录
-                    </div>
-                    <div class="bottom">
-                      <div class="type">签到</div>
-                      <div class="time">发布于1小时前</div>
-                    </div>
-                  </div>
+
+                <div class="box-item" v-for="(item,index) in list1" :key="index">
+                  <avatarimg :avatar_url="item.avatar_url" :tips="item.nickname"></avatarimg>
+
+                  <dynamicitemcnt :item="item"></dynamicitemcnt>
+
                 </div>
               </div>
-              <div class="more">
-                <span class="btn">查看更多</span>
-              </div>
+              <pagination :count="counts" v-if="counts>0"  @setpage="setpage"></pagination>
             </div>
           </div>
 
@@ -47,50 +38,17 @@
             <classtips></classtips>
           </div>
           <div class="right-box">
-
             <div class="panel panel-default">
               <div class="panel-heading">
-                <i class="iconfont">&#xe62e;</i>
-                <span >学习动态</span>
+                <i class="iconfont">&#xe625;</i>
+                <span >最新会员({{newmember.count}})</span>
               </div>
-              <div class="panel-body">
-                <div class="item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-                    <div class="r-tit">linux的基本操作</div>
-                    <div class="b">
-                      <div class="name">张三哈哈哈</div>
-                      <div class="clock">
-                        <i class="iconfont">&#xe6ba;</i>
-                        几分钟之前
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-                <div class="item">
-                  <div class="avatarwrap">
-                    <img class="img-circle" src="https://houdunren-image.oss-cn-qingdao.aliyuncs.com/119771558968238.gif" alt="">
-                  </div>
-                  <div class="r">
-                    <div class="r-tit">linux的基本操作</div>
-                    <div class="b">
-                      <div class="name">张三哈哈哈</div>
-                      <div class="clock">
-                        <i class="i"></i>
-                        几分钟之前
-                      </div>
-                    </div>
-                  </div>
-
+              <div class="panel-body clearfix">
+                <div class="item" v-for="(item,index) in newmember.list" :key="index" >
+                  <avatarimg :avatar_url="item.avatar_url" :tips="item.nickname"></avatarimg>
                 </div>
               </div>
             </div>
-
-
-
 
           </div>
         </div>
@@ -103,10 +61,56 @@
 <script>
     import videolist from "../../components/videolist";
     import classtips from "../../components/classtips";
+
+    import avatarimg from "../../components/avatarimg";
+    import dynamicitemcnt from "../../components/dynamicitemcnt";
+    import pagination from "../../components/pagination";
     export default {
         components:{
             videolist,
-            classtips
+            classtips,
+            avatarimg,
+            dynamicitemcnt,
+            pagination
+        },
+        data(){
+            return {
+              newmember:{
+                  list:[],
+                  count:0
+              },
+              list1:[],
+              counts:0
+            }
+        },
+        mounted(){
+          this.getnewmember();
+          this.loadlist();
+        },
+        methods:{
+            getnewmember(){
+                this.$api({
+                    service:"member.getnewmember"
+                }).then(res=>{
+                    this.newmember.list = res.list;
+                    this.newmember.count = res.count;
+                })
+            },
+            loadlist(){
+                this.$api({
+                    service:"community.getlist",
+                    page:this.page
+                }).then(res=>{
+                    this.list1=res.list;
+                    this.counts= res.count;
+                })
+            },
+            setpage(params){
+                this.goTopNow();
+                this.page=params.page;
+                this.loadlist();
+            },
+
         }
 
     };
@@ -183,28 +187,9 @@
           border-bottom: 1px solid @border;
         }
         .item{
-          display: flex;
-          padding: 10px ;
-          border-bottom: 1px solid @border;
-          .avatarwrap{
-            margin-right: 10px;
-          }
-          .r{
-            .r-tit{
-              line-height: 30px;
-              color: @title;
-              overflow: hidden;
-              width: 100%;
-            }
-            .b{
-              display: flex;
-              color: @subtitle;
-              line-height: 25px;
-              .name{
-                margin-right: 10px;
-              }
-            }
-          }
+          float: left;
+          margin-left: 8px;
+          margin-bottom: 8px;
 
         }
       }

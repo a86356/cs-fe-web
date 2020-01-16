@@ -15,12 +15,19 @@
             <div class="pricetag" :class="item.viptype=='1'?'free':'vip'">
               {{item.viptype=='1'?'免费':'付费'}}
             </div>
+            <div>
 
+            </div>
           </div>
           <div class="left">{{item.total_time==''?'':item.total_time}}</div>
         </div>
         <div class="publishtime">
-           {{item.create_time| beforedateline}}之前
+           <div class="l">{{item.create_time| beforedateline}}之前 - </div>
+           <div class="r">
+             <div class="tag" :class="item.status=='1'?'no':'hide'">未更新</div>
+             <div class="tag" :class="item.status=='2'?'in':'hide'">更新中</div>
+             <div class="tag" :class="item.status=='3'?'end':'hide'">已完结</div>
+           </div>
         </div>
         <loveandcomment :commentnum="item.commentnum" :lovenum="item.lovenum"></loveandcomment>
       </div>
@@ -108,6 +115,28 @@
           color: @subtitle;
           padding: 0 10px;
           line-height: 30px;
+          display: flex;
+          .r{
+            .tag{
+              font-size: 12px;
+              height: 25px;
+              line-height: 25px;
+              margin-left: 5px;
+              padding: 0 8px;
+              margin-top: 2px;
+              color: #fff;
+              border-radius: 5px;
+            }
+            .no{
+              background: @gray;
+            }
+            .in{
+              background: @info;
+            }
+            .end{
+              background: @teal;
+            }
+          }
         }
         .loveandcomment{
           display: flex;

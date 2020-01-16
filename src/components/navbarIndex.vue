@@ -20,15 +20,15 @@
               <i class="iconfont">&#xe9ce;</i>
               首页
             </li>
-            <li :class="navIndex==2?'active':''"  @click="goNav(2,'/cs/videolist')"> <i class="iconfont">&#xe61f;</i>视频课程</li>
-            <li :class="navIndex==3?'active':''"  @click="goNav(3,'/cs/postlist')"> <i class="iconfont">&#xe67b;</i>社区讨论</li>
-            <li :class="navIndex==4?'active':''"  @click="goNav(4,'/cs/checkin')"> <i class="iconfont">&#xe604;</i>打卡签到</li>
-<!--        <li :class="navIndex==4?'active':''"  @click="goNav(5)"> <i class="iconfont">&#xe620;</i>在线文档</li>-->
-            <li :class="navIndex==5?'active':''" class="aixin"  @click="goNav(6,'/cs/subscribe')">
+            <li :class="navIndex==10?'active':''"  @click="goNav(10,'/cs/videolastest')"> <i class="iconfont">&#xe682;</i>最新视频</li>
+            <li :class="navIndex==20?'active':''"  @click="goNav(20,'/cs/videolist')"> <i class="iconfont">&#xe61f;</i>视频课程</li>
+            <li :class="navIndex==30?'active':''"  @click="goNav(30,'/cs/postlist')"> <i class="iconfont">&#xe67b;</i>社区讨论</li>
+            <li :class="navIndex==40?'active':''"  @click="goNav(40,'/cs/checkin')"> <i class="iconfont">&#xe604;</i>打卡签到</li>
+            <li :class="navIndex==50?'active':''" class="aixin"  @click="goNav(50,'/cs/subscribe')">
               <i class="iconfont icon-aixin"></i>
               订阅本站
             </li>
-            <li :class="navIndex==6?'active':''"   @click="goNav(6,'/cs/contactus')"><i class="iconfont">&#xe617;</i>
+            <li :class="navIndex==60?'active':''"   @click="goNav(60,'/cs/contactus')"><i class="iconfont">&#xe617;</i>
               联系我们
             </li>
 
@@ -48,8 +48,8 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="iconfont">&#xe603;</i>{{getUsername}} <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#">基本设置</a></li>
-                <li><a href="#">个人信息</a></li>
+                <li @click="goSetting"><a href="#">基本设置</a></li>
+                <li @click="gomemberinfo"><a href="#">个人信息</a></li>
                 <li role="separator" class="divider"></li>
                 <li @click="logout"><a href="#">退出</a></li>
               </ul>
@@ -67,9 +67,10 @@
 </template>
 
 <script>
-    import config from "../config/config";
 
-    import {mapGetters,mapState} from 'vuex'
+    import {mapGetters} from 'vuex'
+
+    import {createNotify} from "../utils/notify";
 
     export default {
         name: "Login",
@@ -90,12 +91,21 @@
         },
         methods: {
             goNav(index,path){
+
                 this.navIndex= index;
                 this.$router.push({path:path});
 
             },
             goHome(){
                 this.$router.push({path:'/home'});
+            },
+            gomemberinfo(){
+
+              this.checkLogin();
+
+              let userinfo = this.getCache('userinfo')
+              let nickname = JSON.parse(userinfo).nickname
+              this.$router.push({path:'/cs/memberinfo',query:{tab:1,nickname:nickname}});
             },
             logout(){
                 let that= this;

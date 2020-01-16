@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import {getCacheData} from "../utils/cache";
 
 import Home from '@/views/home/home.vue';
 import homeIndex from '@/views/home/index.vue';
 import VideoList from '@/views/video/list.vue';
 import VideoLastest from '@/views/video/lastest.vue';
-import VideoDetail from '@/views/video/detail.vue';
+import VideoDetail from '@/views/video/videodetail.vue';
 import Register from '@/views/member/register.vue';
 import Login from '@/views/member/login.vue';
 import Forgetpwd from '@/views/member/forgetpwd.vue';
@@ -18,6 +18,7 @@ import SubscribeIndex from '@/views/subscribe/index.vue';
 import Setting from '@/views/member/setting.vue';
 import MemberInfo from '@/views/member/info.vue';
 import Checkin from '@/views/checkin/index.vue';
+import config from "../config/config";
 
 
 Vue.use(Router)
@@ -32,6 +33,7 @@ var menu = [
       { path: 'home', component: homeIndex, title: "首页", icon: "", menu: true, name: 'home' },
       { path: 'videolist', component: VideoList, title: "视频列表", icon: "", menu: true, name: 'videolist' },
       { path: 'videodetail', component: VideoDetail, title: "视频详情", icon: "", menu: true, name: 'videodetail' },
+      { path: 'videolastest', component: VideoLastest, title: "视频最新", icon: "", menu: true, name: 'videolastest' },
       { path: 'register', component: Register, title: "注册", icon: "", menu: true, name: 'register' },
       { path: 'login', component: Login, title: "登录", icon: "", menu: true, name: 'login' },
       { path: 'forgetpassword', component: Forgetpwd, title: "忘记密码", icon: "", menu: true, name: 'forgetpassword' },
@@ -65,6 +67,20 @@ router.beforeEach((to, from, next) => {
   // } else {
   //   next()
   // }
+
+  //判断头像,没设置就先去设置
+  // let userinfo =  getCacheData(config.USERINFO)
+  // if(userinfo){
+  //   let u = JSON.parse(userinfo);
+  //   if(!u.avatar_url && to.path!=config.SETTING_PATH){
+  //     next({ path:config.SETTING_PATH})
+  //   }else{
+  //     next();
+  //   }
+  // }else{
+  //   next()
+  // }
+
   next()
 })
 

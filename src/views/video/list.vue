@@ -4,7 +4,7 @@
 
       <div class="searchwrap">
         <div class="input-group">
-          <input type="text" class="form-control" v-model="searchcontent" placeholder="请输入查询的内容">
+          <input type="text" class="form-control" @input="searchClasses" v-model="searchcontent" placeholder="请输入查询的内容">
           <div class="input-group-append">
             <button  class="btn btn-default" @click="searchClasses">搜索课程</button>
           </div>
@@ -54,8 +54,8 @@
                 viptype:'-1',
                 viptypes:[
                     {id:'-1', name:'全部'},
-                    {id:'1', name:'付费'},
-                    {id:'2', name:'免费'},
+                    {id:'1', name:'免费'},
+                    {id:'2', name:'付费'},
                 ],
                 categoryList:[],
                 searchcontent:''

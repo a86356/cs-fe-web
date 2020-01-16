@@ -55,6 +55,8 @@
               <div class="contact">
                 <i class="iconfont" style="font-size: 30px;" @click="goGithub">&#xe690;</i>
               </div>
+
+
             </div>
 
           </div>
@@ -109,17 +111,15 @@
             quoteitem
         },
         mounted() {
-            let {id} =  this.$route.query
+            let {id,floor_id} =  this.$route.query
             this.id=id;
             this.init();
             this.increaseview();
         },
         watch: {
-            $route: function(newVal, oldVal) {
-                if(newVal!=oldVal){
-                    this.init();
-                    this.goTopNow();
-                }
+            "$route": function(newVal, oldVal) {
+                this.init();
+                this.goTopNow();
             }
         },
         methods:{
@@ -131,19 +131,8 @@
                 this.getCollection();
                 this.getalllovers();
             },
-            changemd(e){
 
-                this.content=e;
-            },
-            setquote(item){
 
-                this.quote_id=item.id;
-                this.quote_item=item;
-            },
-            clearquote(){
-                this.quote_id=-1;
-                this.quote_item={};
-            },
             increaseview(){
 
                 this.$api({
